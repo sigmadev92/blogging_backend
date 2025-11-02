@@ -1,6 +1,6 @@
 import { Router } from "express";
 import validateRegData from "../../middlewares/validators/user/signup.js";
-import { getAuth, signin, signUp } from "./user.controller.js";
+import { getAuth, signin, signOut, signUp } from "./user.controller.js";
 import validateLoginData from "../../middlewares/validators/user/login.js";
 import {
   authMiddleware,
@@ -11,6 +11,7 @@ const userRouter = Router();
 
 userRouter.post("/signup", protectExposed, validateRegData, signUp);
 userRouter.post("/signin", protectExposed, validateLoginData, signin);
+userRouter.get("/signout", authMiddleware, signOut);
 userRouter.get("/auth", authMiddleware, getAuth);
 
 export default userRouter;

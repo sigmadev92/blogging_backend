@@ -45,6 +45,16 @@ const signin = async (req, res, next) => {
   }
 };
 
+const signOut = async (req, res, next) => {
+  res
+    .status(200)
+    .cookie("f3Token", null, {
+      expires: new Date(Date.now()),
+      httpOnly: true,
+    })
+    .json({ success: true, msg: "logout successful" });
+};
+
 const getAuth = async (req, res, next) => {
   const userId = req.USER._id;
   const user = await findUserById(userId);
@@ -59,4 +69,4 @@ const getAuth = async (req, res, next) => {
   return res.status(200).json({ success: true, user });
 };
 
-export { signUp, signin, getAuth };
+export { signUp, signin, signOut, getAuth };
