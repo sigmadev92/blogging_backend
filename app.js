@@ -1,5 +1,4 @@
 import express from "express";
-import { PORT } from "./src/config/env.js";
 
 const app = express();
 
