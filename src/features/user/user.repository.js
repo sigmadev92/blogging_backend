@@ -29,6 +29,12 @@ const addNewUser = async (newUserData) => {
   }
 };
 
+const updateProfile = async ({ userId, userData }) => {
+  const updatedUser = await Users.findByIdAndUpdate(userId, userData, {
+    new: true,
+  });
+  return updatedUser;
+};
 const deleteUser = async (userId) => {
   const user = await findUserById(userId);
   if (!user) {
@@ -37,4 +43,4 @@ const deleteUser = async (userId) => {
   await Users.deleteOne({ _id: userId });
   return true;
 };
-export { findUserById, addNewUser, findUserByMail, deleteUser };
+export { findUserById, addNewUser, findUserByMail, updateProfile, deleteUser };

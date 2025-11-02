@@ -1,5 +1,11 @@
 import CustomError from "../../middlewares/handleError.js";
-import { addNewUser, findUserById, findUserByMail } from "./user.repository.js";
+import {
+  addNewUser,
+  findUserById,
+  findUserByMail,
+  deleteUser,
+  updateProfile,
+} from "./user.repository.js";
 
 const signUp = async (req, res, next) => {
   try {
@@ -45,6 +51,13 @@ const signin = async (req, res, next) => {
   }
 };
 
+const editProfile = async (req, res, next) => {
+  const { _id } = req.USER;
+  const userData = req.body;
+  const updatedUser = await updateProfile({ userId: _id, userData });
+  return res.status(200).json({ success: true, updatedUser });
+};
+
 const signOut = async (req, res, next) => {
   res
     .status(200)
@@ -69,4 +82,22 @@ const getAuth = async (req, res, next) => {
   return res.status(200).json({ success: true, user });
 };
 
-export { signUp, signin, signOut, getAuth };
+const deleteUserAccount = async (req, res, next) => {
+  const { _id } = req.USER;
+  const result = await deleteUser(_id);
+  if (!result) {
+    return next(new CustomError(403, "Invalid User Id"));
+  }
+  res
+    .status(200)
+    .cookie("f3Token", null, {
+      expires: new Date(Date.now()),
+      httpOnly: true,
+    })
+    .json({
+      success: true,
+      msg: "Account and token deleted and loged out successfully",
+    });
+};
+
+export { signUp, signin, editProfile, signOut, getAuth, deleteUserAccount };
