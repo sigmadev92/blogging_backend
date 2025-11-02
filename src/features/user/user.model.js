@@ -72,9 +72,7 @@ userSchema.methods.getJWTToken = function () {
   return jwt.sign(
     {
       _id: this._id,
-      fullName: this.fullName,
       email: this.email,
-      profilePic: this.profilePic,
       role: this.role,
     },
     JWT_SECRET_KEY,
@@ -85,7 +83,6 @@ userSchema.methods.getJWTToken = function () {
 };
 // user password compare
 userSchema.methods.comparePassword = async function (password) {
-  console.log(password, this.password);
   return await bcrypt.compare(password, this.password);
 };
 

@@ -29,6 +29,7 @@ const validateLoginData = (req, res, next) => {
   if (error) {
     return next(new CustomError(403, error.details[0].message));
   }
+  console.log("Login validation test cleared");
   next();
 };
 

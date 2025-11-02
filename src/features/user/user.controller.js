@@ -1,5 +1,5 @@
 import CustomError from "../../middlewares/handleError.js";
-import { addNewUser, findUserByMail } from "./user.repository.js";
+import { addNewUser, findUserById, findUserByMail } from "./user.repository.js";
 
 const signUp = async (req, res, next) => {
   try {
@@ -38,11 +38,25 @@ const signin = async (req, res, next) => {
     };
     return res
       .status(200)
-      .cookie("blog_token", cookieOptions)
+      .cookie("blog_token", token, cookieOptions)
       .json({ success: true, user, token });
   } catch (error) {
     return next(error);
   }
 };
 
-export { signUp, signin };
+const getAuth = async (req, res, next) => {
+  const userId = req.USER._id;
+  const user = await findUserById(userId);
+  if (!user) {
+    return next(
+      new CustomError(
+        403,
+        "UserId was valid but user not found. May be deleted"
+      )
+    );
+  }
+  return res.status(200).json({ success: true, user });
+};
+
+export { signUp, signin, getAuth };
