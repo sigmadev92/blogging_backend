@@ -5,9 +5,11 @@ import swaggerOptions from "./src/docs/swagger/swaggerOptions.js";
 import userRouter from "./src/features/user/user.routes.js";
 import notFoundRoute from "./src/middlewares/notFoundRoute.js";
 import { handleError } from "./src/middlewares/handleError.js";
-
+import cookieParser from "cookie-parser";
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
+
 app.get("/", (req, res) => {
   res.send("Blogging Backend");
 });
