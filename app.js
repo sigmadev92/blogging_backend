@@ -11,7 +11,9 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Blogging Backend");
+  res.send(
+    `<div><h1>Blogging Backend</h1> <a href="/api-docs" style="font-size:12px;background-color:lightgreen;padding:5px 5px;border-radius:5px;">Swagger Documentation</a></div>`
+  );
 });
 
 //generate docs
