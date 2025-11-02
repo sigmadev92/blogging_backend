@@ -1,0 +1,17 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "0.  Useful Links\r 1.  Overview\r 2.  Features\r 3.  Tech Stack\r 4.  Prerequisites\r 5.  Start Commands\r 6.  Folder Structure\r 7.  Swagger Documentation\r 8.  Troubleshooting",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.2"
+  }
+}
