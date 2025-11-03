@@ -6,7 +6,16 @@ import userRouter from "./src/features/user/user.routes.js";
 import notFoundRoute from "./src/middlewares/notFoundRoute.js";
 import { handleError } from "./src/middlewares/handleError.js";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import { CLIENT_URL } from "./src/config/env.js";
 const app = express();
+app.use(
+  cors({
+    origin: CLIENT_URL,
+    credentials: true,
+    methods: ["PUT", "POST", "GET", "DELETE"],
+  })
+);
 app.use(cookieParser());
 app.use(express.json());
 
