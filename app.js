@@ -13,11 +13,11 @@ app.use(
   cors({
     origin: CLIENT_URL,
     credentials: true,
-    methods: ["PUT", "POST", "GET", "DELETE"],
   })
 );
-app.use(cookieParser());
+
 app.use(express.json());
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.send(

@@ -1,3 +1,4 @@
+import { NODE_ENV } from "../../config/env.js";
 import CustomError from "../../middlewares/handleError.js";
 import {
   addNewUser,
@@ -37,11 +38,13 @@ const signin = async (req, res, next) => {
     }
     const token = user.getJWTToken();
     const cookieOptions = {
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      sameSite: NODE_ENV === "production" ? "none" : "lax",
+      secure: NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000,
+      path: "/",
     };
+
     return res
       .status(200)
       .cookie("blog_token", token, cookieOptions)
@@ -61,7 +64,7 @@ const editProfile = async (req, res, next) => {
 const signOut = async (req, res, next) => {
   res
     .status(200)
-    .cookie("f3Token", null, {
+    .cookie("blog_token", null, {
       expires: new Date(Date.now()),
       httpOnly: true,
     })
@@ -90,7 +93,7 @@ const deleteUserAccount = async (req, res, next) => {
   }
   res
     .status(200)
-    .cookie("f3Token", null, {
+    .cookie("blog_token", null, {
       expires: new Date(Date.now()),
       httpOnly: true,
     })
