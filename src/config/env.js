@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 
-config();
+config({ quiet: true });
 
 const PORT = process.env.PORT || 3003;
 const DB_NAME = process.env.DB_NAME;
