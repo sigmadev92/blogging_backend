@@ -1,3 +1,4 @@
+import { deleteImage } from "../../config/cloudinary.js";
 import { NODE_ENV } from "../../config/env.js";
 import CustomError from "../../middlewares/handleError.js";
 import {
@@ -6,6 +7,7 @@ import {
   findUserByMail,
   deleteUser,
   updateProfile,
+  removeProfilePicRepo,
 } from "./user.repository.js";
 
 const signUp = async (req, res, next) => {
@@ -65,6 +67,42 @@ const editProfile = async (req, res, next) => {
   return res.status(200).json({ success: true, updatedUser });
 };
 
+const editProfilePic = async (req, res, next) => {
+  //Guaranteed that a valid picture is saved on cloudinary and link is present in req.file;
+  console.log(req.file); //single file
+  const { path: secure_url, filename: publicId } = req.file;
+  const userId = req.USER._id;
+  try {
+    await updateProfile({
+      userId,
+      userData: {
+        "profilePic.secure_url": secure_url,
+        "profilePic.publicId": publicId,
+      },
+    });
+    return res.status(200).json({ success: true, secure_url, publicId });
+  } catch (error) {
+    return next(new CustomError(500, error.message));
+  }
+};
+
+const removeProfilePic = async (req, res, next) => {
+  const userId = req.USER._id;
+  try {
+    const publicId = await removeProfilePicRepo(userId);
+    if (!publicId) {
+      return next(new CustomError(400, "No profile Picture found"));
+    }
+    const isDeleted = await deleteImage(publicId);
+    if (!isDeleted) {
+      return next(new CustomError(500, "Problem in deleting image from Hub"));
+    }
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return next(new CustomError(500, error.message));
+  }
+};
+
 const signOut = async (req, res, next) => {
   res
     .status(200)
@@ -107,4 +145,13 @@ const deleteUserAccount = async (req, res, next) => {
     });
 };
 
-export { signUp, signin, editProfile, signOut, getAuth, deleteUserAccount };
+export {
+  signUp,
+  signin,
+  editProfile,
+  signOut,
+  getAuth,
+  deleteUserAccount,
+  editProfilePic,
+  removeProfilePic,
+};

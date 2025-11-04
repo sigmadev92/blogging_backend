@@ -47,7 +47,12 @@ const userSchema = mongoose.Schema(
       enum: ["reader", "author"],
     },
     profilePic: {
-      type: String,
+      publicId: {
+        type: String,
+      },
+      secure_url: {
+        type: String,
+      },
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
