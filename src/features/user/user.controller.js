@@ -57,6 +57,10 @@ const signin = async (req, res, next) => {
 const editProfile = async (req, res, next) => {
   const { _id } = req.USER;
   const userData = req.body;
+
+  if (!userData) {
+    return next(new CustomError(400, "Please send request in JSON format"));
+  }
   const updatedUser = await updateProfile({ userId: _id, userData });
   return res.status(200).json({ success: true, updatedUser });
 };

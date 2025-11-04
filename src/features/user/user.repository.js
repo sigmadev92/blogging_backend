@@ -33,6 +33,7 @@ const updateProfile = async ({ userId, userData }) => {
   const updatedUser = await Users.findByIdAndUpdate(userId, userData, {
     new: true,
   });
+
   return updatedUser;
 };
 const deleteUser = async (userId) => {
