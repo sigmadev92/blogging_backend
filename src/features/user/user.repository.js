@@ -36,6 +36,22 @@ const updateProfile = async ({ userId, userData }) => {
 
   return updatedUser;
 };
+
+const updateProfilePic = async ({ userId, imageURL }) => {
+  await Users.updateOne({ _id: userId }, { $set: { profilePic: imageURL } });
+};
+const removeProfilePicRepo = async (userId) => {
+  const user = await findUserById(userId);
+  const publicId = user.profilePic.publicId;
+  console.log(user, publicId);
+  await Users.updateOne(
+    { _id: userId },
+    { $set: { "profilePic.secure_url": "", "profilePic.publicId": "" } }
+  );
+
+  return publicId;
+};
+
 const deleteUser = async (userId) => {
   const user = await findUserById(userId);
   if (!user) {
@@ -44,4 +60,12 @@ const deleteUser = async (userId) => {
   await Users.deleteOne({ _id: userId });
   return true;
 };
-export { findUserById, addNewUser, findUserByMail, updateProfile, deleteUser };
+export {
+  findUserById,
+  addNewUser,
+  findUserByMail,
+  updateProfile,
+  deleteUser,
+  updateProfilePic,
+  removeProfilePicRepo,
+};
