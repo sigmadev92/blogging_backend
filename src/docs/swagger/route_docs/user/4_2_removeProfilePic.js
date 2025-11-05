@@ -5,6 +5,8 @@
  *     summary: Remove Profile Pic
  *     description: >
  *            This route will remove the profile picture of the user.
+ *     security:
+ *       - cookieAuth: []
  *     requestBody:
  *       required: false
  *       description: Nothing required to be send in the request body.
