@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import validator from "validator";
 import { JWT_EXPIRES_IN, JWT_SECRET_KEY } from "../../config/env.js";
+
 const userSchema = mongoose.Schema(
   {
     email: {
@@ -14,6 +15,7 @@ const userSchema = mongoose.Schema(
     },
     userName: {
       type: String,
+      unique: [true, "This userName is not available"],
     },
 
     fullName: {
@@ -53,6 +55,23 @@ const userSchema = mongoose.Schema(
       secure_url: {
         type: String,
       },
+    },
+    dateOfBirth: {
+      type: Date,
+    },
+    aboutMe: {
+      type: String,
+    },
+    requestedForDelete: {
+      type: Boolean,
+      default: false,
+    },
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedOn: {
+      type: Date,
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
