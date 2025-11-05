@@ -21,11 +21,13 @@ const storage = new CloudinaryStorage({
       // Folder paths
       const folder = "blog_app";
       let endFolder = "";
+      let public_id = `${userId}`;
       if (isImage) {
         if (req.imgType === "profilePic") {
           endFolder = folder + "/images/profile_pics";
         } else if (req.imgType === "blog_thumbnail") {
-          endFolder = folder + "/images/blog_thumbnails";
+          endFolder = folder + "/images/blog_thumbnails/" + userId;
+          public_id = req.blogId;
         } else {
           endFolder = folder + "/images/others";
         }
@@ -39,7 +41,7 @@ const storage = new CloudinaryStorage({
       // Return Cloudinary upload params
       return {
         folder: endFolder,
-        public_id: `${userId}`, // filename without extension
+        public_id, // filename without extension
         format: ext, // keep original extension
         resource_type: isPdf ? "raw" : "image", // PDFs are 'raw', images are 'image'
         allowed_formats: ["jpg", "jpeg", "png", "webp", "pdf"],
