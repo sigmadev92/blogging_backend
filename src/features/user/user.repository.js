@@ -41,7 +41,9 @@ const updateProfilePic = async ({ userId, imageURL }) => {
   await Users.updateOne({ _id: userId }, { $set: { profilePic: imageURL } });
 };
 const removeProfilePicRepo = async (userId) => {
-  const publicId = await findUserById(userId).profilePic.publicId;
+  const user = await findUserById(userId);
+  const publicId = user.profilePic.publicId;
+  console.log(user, publicId);
   await Users.updateOne(
     { _id: userId },
     { $set: { "profilePic.secure_url": "", "profilePic.publicId": "" } }

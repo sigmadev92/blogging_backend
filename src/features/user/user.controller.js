@@ -89,14 +89,18 @@ const editProfilePic = async (req, res, next) => {
 const removeProfilePic = async (req, res, next) => {
   const userId = req.USER._id;
   try {
+    console.log(userId);
     const publicId = await removeProfilePicRepo(userId);
+    console.log(publicId);
     if (!publicId) {
       return next(new CustomError(400, "No profile Picture found"));
     }
+    console.log("sas");
     const isDeleted = await deleteImage(publicId);
     if (!isDeleted) {
       return next(new CustomError(500, "Problem in deleting image from Hub"));
     }
+
     return res.status(200).json({ success: true });
   } catch (error) {
     return next(new CustomError(500, error.message));
