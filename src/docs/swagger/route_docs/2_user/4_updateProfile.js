@@ -9,6 +9,8 @@
  *
  *     tags:
  *       - Users
+ *     security:
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:

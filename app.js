@@ -8,6 +8,7 @@ import { handleError } from "./src/middlewares/handleError.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { CLIENT_URL } from "./src/config/env.js";
+import blogRouter from "./src/features/blog/blog.routes.js";
 const app = express();
 app.use(
   cors({
@@ -31,6 +32,7 @@ const swaggerDocs = swaggerJSDoc(swaggerOptions);
 //swagger UI-route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/api/users", userRouter);
+app.use("/api/blogs/", blogRouter);
 
 app.use(notFoundRoute);
 app.use(handleError);

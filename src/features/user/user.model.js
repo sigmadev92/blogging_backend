@@ -5,7 +5,7 @@ import crypto from "crypto";
 import validator from "validator";
 import { JWT_EXPIRES_IN, JWT_SECRET_KEY } from "../../config/env.js";
 
-const userSchema = mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     email: {
       type: String,

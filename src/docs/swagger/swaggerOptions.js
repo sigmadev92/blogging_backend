@@ -4,9 +4,10 @@ const swaggerOptions = {
   definition: {
     openapi: "3.0.0", // OpenAPI version
     info: {
-      title: "Blogging App API",
+      title: "BlogsEra - Blogging App API",
       version: "1.0.0",
-      description: "API documentation for the backend of Blogging (MERN)",
+      description:
+        "<b>API documentation</b> for the backend of Blogging App built using MERN stack",
     },
     servers: [
       {
