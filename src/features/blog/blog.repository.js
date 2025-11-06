@@ -18,7 +18,7 @@ const updateBlogRepo = async ({ authorId, blogId, data }) => {
       },
     };
   }
-  if (!blog.thumbnail.publicId) {
+  if (!blog.thumbnail.publicId && data.isPublished) {
     return {
       code: 400,
       result: {

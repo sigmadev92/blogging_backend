@@ -9,16 +9,14 @@
  *       - Blogs
  *     security:
  *       - cookieAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               blogId:
- *                 type: string
- *                 description: blog Id of the blog to be published
+ *     parameters:
+ *       - in: path
+ *         name: blogId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           length: 24
+ *         description: The ID of the blog to be published
  *     responses:
  *       200:
  *         content:
@@ -30,7 +28,7 @@
  *                   type: boolean
  *                   example: true
  *       400:
- *         description: Bad Request — Missing or invalid input fields
+ *         description: Erro : thubnail is not added to the blog.
  *         content:
  *           application/json:
  *             schema:
@@ -41,7 +39,7 @@
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: "Title and description are required."
+ *                   example: "The thubmnail is not set yet"
  *       403:
  *         description: Authentication required
  *         content:
