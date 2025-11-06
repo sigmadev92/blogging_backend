@@ -3,13 +3,12 @@ import CustomError from "../../handleError.js";
 
 const validateRegData = (req, res, next) => {
   if (!req.body) {
-    return next(
-      new CustomError(400, "Body Missing. Pleasse send Data in JSON")
-    );
+    return next(new CustomError(400, "Body Missing. Please send Data in JSON"));
   }
   console.log(req.body);
   const { fullName, email, password } = req.body;
   if (!fullName || !email || !password) {
+    console.log("here 1");
     return next(
       new CustomError(
         400,
@@ -20,11 +19,13 @@ const validateRegData = (req, res, next) => {
 
   const { firstName, middleName, lastName } = fullName;
   if (!firstName || !lastName) {
+    console.log("here 2");
     return next(
       new CustomError(400, "FirstName and LastName are required. Found Missing")
     );
   }
   if (middleName && middleName.length > 10) {
+    console.log("here 3");
     return next(
       new CustomError(400, "Middlename should not exceed 10 characters")
     );
@@ -64,6 +65,7 @@ const validateRegData = (req, res, next) => {
   });
 
   if (error) {
+    console.log("error came");
     return next(new CustomError(400, error.details[0].message));
   }
   next();

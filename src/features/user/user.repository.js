@@ -19,6 +19,7 @@ const addNewUser = async (newUserData) => {
       },
     };
   } catch (error) {
+    console.log(error);
     return {
       code: 400,
       result: {

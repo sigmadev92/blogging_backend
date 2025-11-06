@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema(
     userName: {
       type: String,
       unique: [true, "This userName is not available"],
+      sparse: true,
     },
 
     fullName: {

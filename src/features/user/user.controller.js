@@ -11,6 +11,7 @@ import {
 } from "./user.repository.js";
 
 const signUp = async (req, res, next) => {
+  console.log("here also");
   try {
     const response = await addNewUser(req.body);
     if (response.code === 201) {

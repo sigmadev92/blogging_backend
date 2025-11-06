@@ -28,7 +28,7 @@
  *                   type: boolean
  *                   example: true
  *       400:
- *         description: Erro : thubnail is not added to the blog.
+ *         description: Error-thubnail is not added to the blog.
  *         content:
  *           application/json:
  *             schema:

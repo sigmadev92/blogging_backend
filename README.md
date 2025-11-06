@@ -19,3 +19,19 @@
 - This project contains the APIs for Blogging App. Created using Node and Express. Contains Open API spec using Swagger as well.
 
 ### Prerequisites
+
+### Swagger Documentation
+
+- A detailed API documentation is available [Here](http://localhost:3003/api-docs)
+
+### Troubleshooting
+
+- During the development I encountered these errors:
+
+  1.  Unique userName problem in mongoose schema
+
+  - Solution :
+    1. Stop the server
+    2. Open mongo shell and use your database.
+    3. In users collection, delete the userName index.
+    4. Restart the server
