@@ -42,7 +42,7 @@ const addThumbNailToBlog = async (req, res, next) => {
 
 const publishBlog = async (req, res, next) => {
   const authorId = req.USER._id;
-  const { blogId } = req.body;
+  const { blogId } = req.params;
 
   if (!blogId) {
     return next(new CustomError(400, "BlogId missing"));
@@ -62,7 +62,7 @@ const publishBlog = async (req, res, next) => {
 //no thumbnail
 const editBlog = async (req, res, next) => {
   const authorId = req.USER._id;
-  const { blogId } = req.body;
+  const { blogId } = req.params;
 
   if (!blogId) {
     return next(new CustomError(400, "Invalid details"));
@@ -74,7 +74,7 @@ const editBlog = async (req, res, next) => {
 
 const deleteBlog = async (req, res, next) => {
   const authorId = req.USER._id;
-  const { blogId } = req.body;
+  const { blogId } = req.params;
 
   if (!blogId) {
     return next(new CustomError(400, "Invalid Details"));

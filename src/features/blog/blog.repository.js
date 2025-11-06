@@ -18,6 +18,24 @@ const updateBlogRepo = async ({ authorId, blogId, data }) => {
       },
     };
   }
+  if (!blog.thumbnail.publicId) {
+    return {
+      code: 400,
+      result: {
+        success: false,
+        message: "Error. Please add thumbnail before publishing",
+      },
+    };
+  }
+  if (blog.isPublished && data.isPublished) {
+    return {
+      code: 400,
+      result: {
+        success: false,
+        message: "Error. The blog is already published and live",
+      },
+    };
+  }
   await Blogs.updateOne({ authorId, _id: blogId }, data);
   return {
     code: 200,

@@ -8,7 +8,6 @@ import {
   publishBlog,
 } from "./blog.controller.js";
 import upload from "../../config/multerCloudinary.js";
-import { updateBlogRepo } from "./blog.repository.js";
 const blogRouter = Router();
 
 blogRouter.post("/new", authMiddleware, addNewBlog);
@@ -25,7 +24,7 @@ blogRouter.put(
   addThumbNailToBlog
 );
 
-blogRouter.put("/publish", authMiddleware, publishBlog);
-blogRouter.put("/edit", authMiddleware, editBlog);
-blogRouter.delete("/", authMiddleware, deleteBlog);
+blogRouter.put("/publish/:blogId", authMiddleware, publishBlog);
+blogRouter.put("/edit/:blogId", authMiddleware, editBlog);
+blogRouter.delete("/:blogId", authMiddleware, deleteBlog);
 export default blogRouter;

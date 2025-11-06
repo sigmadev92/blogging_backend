@@ -12,8 +12,7 @@
  *         required: true
  *         schema:
  *           type: string
- *           minLength: 24
- *           maxLength: 24
+ *           length: 24
  *         description: The ID of the blog to update.
  *     security:
  *       - cookieAuth: []
