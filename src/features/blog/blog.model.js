@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const blogSchema = new mongoose.Schema(
   {
     title: {
@@ -28,9 +27,21 @@ const blogSchema = new mongoose.Schema(
     },
     searchTags: {
       type: [String],
+      validate: {
+        validator: function (v) {
+          return v.length >= 1 && v.length <= 5;
+        },
+        message: "searchTags must contain between 1 and 5 items",
+      },
     },
     topics: {
       type: [String],
+      validate: {
+        validator: function (v) {
+          return v.length >= 1 && v.length <= 10;
+        },
+        message: "searchTags must contain between 1 and 5 items",
+      },
     },
     archived: {
       type: Boolean,

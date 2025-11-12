@@ -5,15 +5,20 @@ import {
   addThumbNailToBlog,
   deleteBlog,
   editBlog,
+  findBlogById,
+  getMyBlogs,
   publishBlog,
 } from "./blog.controller.js";
 import upload from "../../config/multerCloudinary.js";
+import { isValidBlog } from "../../middlewares/validators/blog/check.js";
 const blogRouter = Router();
 
 blogRouter.post("/new", authMiddleware, addNewBlog);
 blogRouter.put(
   "/thumbnail/:blogId",
+
   authMiddleware,
+  isValidBlog,
   (req, res, next) => {
     req.imgType = "blog_thumbnail";
     console.log("before," + req.body);
@@ -23,8 +28,9 @@ blogRouter.put(
   upload.single("thumbnail"),
   addThumbNailToBlog
 );
-
-blogRouter.put("/publish/:blogId", authMiddleware, publishBlog);
-blogRouter.put("/edit/:blogId", authMiddleware, editBlog);
-blogRouter.delete("/:blogId", authMiddleware, deleteBlog);
+blogRouter.get("/one/:blogId", authMiddleware, findBlogById);
+blogRouter.get("/my-blogs", authMiddleware, getMyBlogs);
+blogRouter.put("/publish/:blogId", authMiddleware, isValidBlog, publishBlog);
+blogRouter.put("/edit/:blogId", authMiddleware, isValidBlog, editBlog);
+blogRouter.delete("/:blogId", authMiddleware, isValidBlog, deleteBlog);
 export default blogRouter;
