@@ -30,6 +30,7 @@ blogRouter.put(
   addThumbNailToBlog
 );
 blogRouter.get("/one/:blogId", authMiddleware, findBlogById);
+blogRouter.get("/public/one/:blogId", findBlogById);
 blogRouter.get("/my-blogs", authMiddleware, getMyBlogs);
 blogRouter.get("/all", getAllBlogs);
 blogRouter.put("/publish/:blogId", authMiddleware, isValidBlog, publishBlog);
