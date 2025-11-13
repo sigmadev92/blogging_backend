@@ -3,12 +3,12 @@ import CustomError from "../../middlewares/handleError.js";
 import {
   addNewBlogRepo,
   deleteBlogRepo,
+  findAllRepo,
   findBlogByIdRepo,
   getMyBlogsRepo,
   publishBlogRepo,
   updateBlogRepo,
 } from "./blog.repository.js";
-
 const findBlogById = async (req, res, next) => {
   const blog = await findBlogByIdRepo(req.params.blogId);
   if (!blog) {
@@ -16,9 +16,13 @@ const findBlogById = async (req, res, next) => {
   }
   res.status(200).json({ success: true, blog });
 };
+
+const getAllBlogs = async (req, res, next) => {
+  const blogs = await findAllRepo();
+  return res.status(200).json({ blogs });
+};
 const addNewBlog = async (req, res, next) => {
   const authorId = req.USER._id;
-
   try {
     const { title, description, searchTags, topics } = req.body;
 
@@ -85,8 +89,8 @@ const editBlog = async (req, res, next) => {
     return next(new CustomError(400, "Invalid details"));
   }
 
-  const response = await updateBlogRepo({ authorId, blogId, data: req.body });
-  return res.status(response.code).json(response.result);
+  const blog = await updateBlogRepo({ authorId, blogId, data: req.body });
+  return res.status(200).json({ success: true, blog });
 };
 
 const deleteBlog = async (req, res, next) => {
@@ -105,6 +109,7 @@ const getMyBlogs = async (req, res, next) => {
   return res.status(200).json({ success: true, blogs });
 };
 export {
+  getAllBlogs,
   addNewBlog,
   addThumbNailToBlog,
   publishBlog,

@@ -1,7 +1,7 @@
 import { isValidBlogRepo } from "../../../features/blog/blog.repository.js";
 
 export const isValidBlog = async (req, res, next) => {
-  console.log("arrived here");
+  console.log("arrived here on blog validator");
   const authorId = req.USER._id;
   const { blogId } = req.params;
 
@@ -10,7 +10,7 @@ export const isValidBlog = async (req, res, next) => {
   }
 
   const response = await isValidBlogRepo({ authorId, blogId });
-  console.log(response);
+
   if (response.code === 200) {
     return next();
   }

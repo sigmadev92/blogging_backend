@@ -6,6 +6,7 @@ import {
   deleteBlog,
   editBlog,
   findBlogById,
+  getAllBlogs,
   getMyBlogs,
   publishBlog,
 } from "./blog.controller.js";
@@ -30,6 +31,7 @@ blogRouter.put(
 );
 blogRouter.get("/one/:blogId", authMiddleware, findBlogById);
 blogRouter.get("/my-blogs", authMiddleware, getMyBlogs);
+blogRouter.get("/all", getAllBlogs);
 blogRouter.put("/publish/:blogId", authMiddleware, isValidBlog, publishBlog);
 blogRouter.put("/edit/:blogId", authMiddleware, isValidBlog, editBlog);
 blogRouter.delete("/:blogId", authMiddleware, isValidBlog, deleteBlog);

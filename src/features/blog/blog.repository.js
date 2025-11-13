@@ -1,7 +1,9 @@
 import Blogs from "./blog.model.js";
-
 const findBlogByIdRepo = async (blogId) => {
   return await Blogs.findById(blogId);
+};
+const findAllRepo = async () => {
+  return await Blogs.find();
 };
 const addNewBlogRepo = async (blogData) => {
   const newBlog = await Blogs.insertOne({ ...blogData });
@@ -35,7 +37,6 @@ const isValidBlogRepo = async ({ authorId, blogId }) => {
     code: 200,
     result: {
       success: true,
-      blog,
     },
   };
 };
@@ -44,6 +45,7 @@ const updateBlogRepo = async ({ authorId, blogId, data }) => {
   const blog = await Blogs.findOneAndUpdate({ authorId, _id: blogId }, data, {
     new: true,
   });
+
   return blog;
 };
 
@@ -71,6 +73,7 @@ const getMyBlogsRepo = async (authorId) => {
 
 export {
   findBlogByIdRepo,
+  findAllRepo,
   addNewBlogRepo,
   updateBlogRepo,
   publishBlogRepo,
