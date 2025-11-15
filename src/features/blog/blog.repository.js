@@ -2,7 +2,7 @@ import Blogs from "./blog.model.js";
 const findBlogByIdRepo = async (blogId) => {
   const blog = await Blogs.findById(blogId).populate({
     path: "authorId",
-    select: "fullName email profilePic -_id", // include only these, exclude _id
+    select: "fullName email profilePic _id username", // include only these, exclude _id
   });
 
   return blog;
