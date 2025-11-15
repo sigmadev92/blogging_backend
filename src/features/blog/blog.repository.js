@@ -8,7 +8,10 @@ const findBlogByIdRepo = async (blogId) => {
   return blog;
 };
 const findAllRepo = async () => {
-  return await Blogs.find();
+  return await Blogs.find().populate({
+    path: "authorId",
+    select: "fullName _id",
+  });
 };
 const addNewBlogRepo = async (blogData) => {
   const newBlog = await Blogs.insertOne({ ...blogData });
