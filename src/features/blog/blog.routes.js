@@ -5,6 +5,7 @@ import {
   addThumbNailToBlog,
   deleteBlog,
   editBlog,
+  findAllBlogsOfAuthor,
   findBlogById,
   getAllBlogs,
   getMyBlogs,
@@ -33,6 +34,7 @@ blogRouter.get("/one/:blogId", authMiddleware, findBlogById);
 blogRouter.get("/public/one/:blogId", findBlogById);
 blogRouter.get("/my-blogs", authMiddleware, getMyBlogs);
 blogRouter.get("/all", getAllBlogs);
+blogRouter.get("/all/:authorId", findAllBlogsOfAuthor);
 blogRouter.put("/publish/:blogId", authMiddleware, isValidBlog, publishBlog);
 blogRouter.put("/edit/:blogId", authMiddleware, isValidBlog, editBlog);
 blogRouter.delete("/:blogId", authMiddleware, isValidBlog, deleteBlog);

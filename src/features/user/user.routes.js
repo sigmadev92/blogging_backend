@@ -4,6 +4,7 @@ import {
   deleteUserAccount,
   editProfile,
   editProfilePic,
+  findUserProfile,
   getAuth,
   removeProfilePic,
   signin,
@@ -33,6 +34,7 @@ userRouter.put(
   upload.single("profilePic"),
   editProfilePic
 );
+userRouter.get("/profile/:medium/:_value", findUserProfile);
 userRouter.put("/remove/profile-pic", authMiddleware, removeProfilePic);
 userRouter.put("/update/profile", authMiddleware, editProfile);
 userRouter.delete("/account", authMiddleware, deleteUserAccount);

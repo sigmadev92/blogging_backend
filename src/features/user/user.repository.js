@@ -4,6 +4,10 @@ const findUserById = async (userId) => {
   return await Users.findById(userId);
 };
 
+const findUserByUsername = async (userName) => {
+  return await Users.findOne({ userName });
+};
+
 const findUserByMail = async (email) => {
   return await Users.findOne({ email }).select("+password");
 };
@@ -65,6 +69,7 @@ export {
   findUserById,
   addNewUser,
   findUserByMail,
+  findUserByUsername,
   updateProfile,
   deleteUser,
   updateProfilePic,

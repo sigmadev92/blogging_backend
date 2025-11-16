@@ -8,6 +8,7 @@ import {
   deleteUser,
   updateProfile,
   removeProfilePicRepo,
+  findUserByUsername,
 } from "./user.repository.js";
 
 const signUp = async (req, res, next) => {
@@ -118,6 +119,21 @@ const signOut = async (req, res, next) => {
     .json({ success: true, msg: "logout successful" });
 };
 
+const findUserProfile = async (req, res, next) => {
+  const { medium, _value } = req.params;
+  let author = null;
+  if (medium === "username") {
+    author = await findUserByUsername(_value);
+  } else {
+    author = await findUserById(_value);
+  }
+
+  if (!author) {
+    return next(new CustomError(404, "Invalid User Credentials"));
+  }
+
+  return res.status(200).json({ success: true, author });
+};
 const getAuth = async (req, res, next) => {
   const userId = req.USER._id;
   const user = await findUserById(userId);
@@ -159,4 +175,5 @@ export {
   deleteUserAccount,
   editProfilePic,
   removeProfilePic,
+  findUserProfile,
 };

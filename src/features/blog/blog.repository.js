@@ -78,7 +78,9 @@ const deleteBlogRepo = async ({ authorId, blogId }) => {
 const getMyBlogsRepo = async (authorId) => {
   return await Blogs.find({ authorId });
 };
-
+const findBlogsOfAuthorRepo = async (authorId) => {
+  return await Blogs.find({ authorId });
+};
 export {
   findBlogByIdRepo,
   findAllRepo,
@@ -88,4 +90,5 @@ export {
   deleteBlogRepo,
   getMyBlogsRepo,
   isValidBlogRepo,
+  findBlogsOfAuthorRepo,
 };

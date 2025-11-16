@@ -5,6 +5,7 @@ import {
   deleteBlogRepo,
   findAllRepo,
   findBlogByIdRepo,
+  findBlogsOfAuthorRepo,
   getMyBlogsRepo,
   publishBlogRepo,
   updateBlogRepo,
@@ -108,6 +109,22 @@ const getMyBlogs = async (req, res, next) => {
 
   return res.status(200).json({ success: true, blogs });
 };
+
+const findAllBlogsOfAuthor = async (req, res, next) => {
+  const { authorId } = req.params;
+  console.log(authorId);
+  if (!authorId || authorId.length != 24) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing or Invalid Credentials" });
+  }
+  const blogs = await findBlogsOfAuthorRepo(authorId);
+  if (blogs.length === 0) {
+    return res.status(404).json({ success: false, message: "Invalid ID" });
+  }
+
+  return res.status(200).json({ success: true, blogs });
+};
 export {
   getAllBlogs,
   addNewBlog,
@@ -117,4 +134,5 @@ export {
   deleteBlog,
   getMyBlogs,
   findBlogById,
+  findAllBlogsOfAuthor,
 };
