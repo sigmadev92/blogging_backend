@@ -6,13 +6,21 @@ import {
   unlikeBlogRepo,
 } from "./like.repository.js";
 
+import CustomError from "../../middlewares/handleError.js";
 const likeDislike = async (req, res, next) => {
   const userId = req.USER._id;
   const { blogId, action } = req.params;
+  console.log(action);
+  if (Math.abs(action) !== 1) {
+    return next(new CustomError(400, "Invalid action"));
+  }
 
-  await likeDislikeBlogRepo({ userId, blogId, action });
+  const like = await likeDislikeBlogRepo({ userId, blogId, action });
+  if (!like) {
+    return next(new CustomError(400, "Invalid credentials"));
+  }
 
-  return res.status(200).json({ success: true });
+  return res.status(200).json({ success: true, like });
 };
 
 const unlike = async (req, res, next) => {
@@ -37,9 +45,9 @@ const getLikesOnMyBlog = async (req, res, next) => {
 
 const getMyLikedBlogs = async (req, res, next) => {
   const userId = req.USER._id;
-  const blogIds = await getBlogIdsRepo(userId);
+  const likes = await getBlogIdsRepo(userId);
 
-  return res.status(200).json({ success: true, blogIds });
+  return res.status(200).json({ success: true, likes });
 };
 
 export {

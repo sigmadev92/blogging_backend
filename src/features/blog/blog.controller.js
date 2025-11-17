@@ -6,6 +6,7 @@ import {
   findAllRepo,
   findBlogByIdRepo,
   findBlogsOfAuthorRepo,
+  findBlogsWithIdsRepo,
   getMyBlogsRepo,
   publishBlogRepo,
   updateBlogRepo,
@@ -125,6 +126,18 @@ const findAllBlogsOfAuthor = async (req, res, next) => {
 
   return res.status(200).json({ success: true, blogs });
 };
+
+const findBlogsWithIds = async (req, res, next) => {
+  if (!req.body) {
+    return res.status(400).json({ message: "body missing" });
+  }
+  const { blogIds } = req.body;
+
+  const blogs = await findBlogsWithIdsRepo(blogIds);
+  // console.log(blogs);
+
+  return res.status(200).json({ blogs });
+};
 export {
   getAllBlogs,
   addNewBlog,
@@ -135,4 +148,5 @@ export {
   getMyBlogs,
   findBlogById,
   findAllBlogsOfAuthor,
+  findBlogsWithIds,
 };

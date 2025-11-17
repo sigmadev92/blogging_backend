@@ -7,6 +7,7 @@ import {
   editBlog,
   findAllBlogsOfAuthor,
   findBlogById,
+  findBlogsWithIds,
   getAllBlogs,
   getMyBlogs,
   publishBlog,
@@ -16,6 +17,8 @@ import { isValidBlog } from "../../middlewares/validators/blog/check.js";
 const blogRouter = Router();
 
 blogRouter.post("/new", authMiddleware, addNewBlog);
+//get all blogs with IDs for displaying
+blogRouter.post("/selected-blogs", findBlogsWithIds);
 blogRouter.put(
   "/thumbnail/:blogId",
 
@@ -30,10 +33,15 @@ blogRouter.put(
   upload.single("thumbnail"),
   addThumbNailToBlog
 );
-blogRouter.get("/one/:blogId", authMiddleware, findBlogById);
+
+// this is to display all details of blog with some details of the author
 blogRouter.get("/public/one/:blogId", findBlogById);
+// to get all the blogs of loggedIN user
 blogRouter.get("/my-blogs", authMiddleware, getMyBlogs);
+
+//for getting all blogs
 blogRouter.get("/all", getAllBlogs);
+// for getting all blogs of an author
 blogRouter.get("/all/:authorId", findAllBlogsOfAuthor);
 blogRouter.put("/publish/:blogId", authMiddleware, isValidBlog, publishBlog);
 blogRouter.put("/edit/:blogId", authMiddleware, isValidBlog, editBlog);

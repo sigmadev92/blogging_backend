@@ -57,6 +57,14 @@ const userSchema = new mongoose.Schema(
         type: String,
       },
     },
+    thumbnail: {
+      publicId: {
+        type: String,
+      },
+      secure_url: {
+        type: String,
+      },
+    },
     dateOfBirth: {
       type: Date,
     },

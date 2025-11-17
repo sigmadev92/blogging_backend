@@ -1,7 +1,11 @@
 import Likes from "./like.model.js";
 
 const likeDislikeBlogRepo = async ({ userId, blogId, action }) => {
-  await Likes.updateOne({ userId, blogId }, { action }, { upsert: true });
+  return await Likes.findOneAndUpdate(
+    { userId, blogId },
+    { action },
+    { upsert: true, new: true }
+  );
 };
 
 const unlikeBlogRepo = async ({ userId, blogId }) => {
