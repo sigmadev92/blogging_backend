@@ -5,8 +5,9 @@ import {
   unlikeAllBlogsRepo,
   unlikeBlogRepo,
 } from "./like.repository.js";
-
+import { onlineUsers } from "../../config/socket.js";
 import CustomError from "../../middlewares/handleError.js";
+import { findAuthorIdRepo } from "../blog/blog.repository.js";
 const likeDislike = async (req, res, next) => {
   const userId = req.USER._id;
   const { blogId, action } = req.params;
@@ -18,6 +19,22 @@ const likeDislike = async (req, res, next) => {
   const like = await likeDislikeBlogRepo({ userId, blogId, action });
   if (!like) {
     return next(new CustomError(400, "Invalid credentials"));
+  }
+
+  const authorId = (await findAuthorIdRepo(blogId)).toString();
+
+  const io = req.app.get("io");
+  const receiverSocketId = onlineUsers[authorId];
+  console.log(userId, authorId, receiverSocketId);
+  // if the receiver is online - send a real time message too.
+  if (receiverSocketId && authorId !== userId) {
+    console.log("author and user are different");
+    io.to(receiverSocketId).emit("like-dislike-blog", {
+      createdAt: new Date(),
+      blogId,
+      userId,
+      action: Number(action),
+    });
   }
 
   return res.status(200).json({ success: true, like });

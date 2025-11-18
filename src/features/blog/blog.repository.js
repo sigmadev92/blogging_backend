@@ -90,6 +90,10 @@ const getMyBlogsRepo = async (authorId) => {
 const findBlogsOfAuthorRepo = async (authorId) => {
   return await Blogs.find({ authorId });
 };
+
+const findAuthorIdRepo = async (blogId) => {
+  return (await Blogs.findById(blogId)).authorId;
+};
 export {
   findBlogByIdRepo,
   findAllRepo,
@@ -101,4 +105,5 @@ export {
   getMyBlogsRepo,
   isValidBlogRepo,
   findBlogsOfAuthorRepo,
+  findAuthorIdRepo,
 };

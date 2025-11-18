@@ -65,6 +65,10 @@ const deleteUser = async (userId) => {
   await Users.deleteOne({ _id: userId });
   return true;
 };
+
+const findAuthorsRepo = async () => {
+  return await Users.find({ role: "author" });
+};
 export {
   findUserById,
   addNewUser,
@@ -74,4 +78,5 @@ export {
   deleteUser,
   updateProfilePic,
   removeProfilePicRepo,
+  findAuthorsRepo,
 };
