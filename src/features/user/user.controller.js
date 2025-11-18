@@ -9,6 +9,7 @@ import {
   updateProfile,
   removeProfilePicRepo,
   findUserByUsername,
+  findAuthorsRepo,
 } from "./user.repository.js";
 
 const signUp = async (req, res, next) => {
@@ -166,6 +167,12 @@ const deleteUserAccount = async (req, res, next) => {
     });
 };
 
+const getAuthors = async (req, res, next) => {
+  const authors = await findAuthorsRepo();
+
+  return res.status(200).json({ authors });
+};
+
 export {
   signUp,
   signin,
@@ -176,4 +183,5 @@ export {
   editProfilePic,
   removeProfilePic,
   findUserProfile,
+  getAuthors,
 };
