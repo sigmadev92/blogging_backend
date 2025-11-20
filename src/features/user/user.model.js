@@ -13,6 +13,18 @@ const userSchema = new mongoose.Schema(
       unique: [true, "email already registered"],
       validate: [validator.isEmail, "please enter a valid email"],
     },
+    isMailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isAccountVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isPremiumAccount: {
+      type: Boolean,
+      default: false,
+    },
     userName: {
       type: String,
       unique: [true, "This userName is not available"],
@@ -107,6 +119,11 @@ userSchema.methods.getJWTToken = function () {
       _id: this._id,
       email: this.email,
       role: this.role,
+      userName: this.userName,
+      profilePic: this.isProfilePic,
+      isMailVerified: this.isMailVerified,
+      isAccountVerified: this.isAccountVerified,
+      isPremiumAccount: this.isPremiumAccount,
     },
     JWT_SECRET_KEY,
     {

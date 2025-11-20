@@ -17,6 +17,22 @@ const authMiddleware = (req, res, next) => {
   return next();
 };
 
+const isAuthenticated = (req, res, next) => {
+  req.USER = null;
+  const token = req.cookies.blog_token;
+
+  if (!token) {
+    return next();
+  }
+
+  const user = jwt.verify(token, JWT_SECRET_KEY);
+  if (!user) {
+    return next();
+  }
+  req.USER = { ...user, iat: "", exp: "" };
+  next();
+};
+
 const protectExposed = (req, res, next) => {
   const token = req.cookies.blog_token;
   if (!token) {
@@ -30,4 +46,4 @@ const protectExposed = (req, res, next) => {
 
   next(new CustomError(400, "You are already logged in."));
 };
-export { authMiddleware, protectExposed };
+export { authMiddleware, protectExposed, isAuthenticated };
