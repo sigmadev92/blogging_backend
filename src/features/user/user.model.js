@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import validator from "validator";
 import { JWT_EXPIRES_IN, JWT_SECRET_KEY } from "../../config/env.js";
+import countries from "i18n-iso-countries";
+const countryNames = Object.values(countries.getNames("en"));
 
 const userSchema = new mongoose.Schema(
   {
@@ -13,24 +15,6 @@ const userSchema = new mongoose.Schema(
       unique: [true, "email already registered"],
       validate: [validator.isEmail, "please enter a valid email"],
     },
-    isMailVerified: {
-      type: Boolean,
-      default: false,
-    },
-    isAccountVerified: {
-      type: Boolean,
-      default: false,
-    },
-    isPremiumAccount: {
-      type: Boolean,
-      default: false,
-    },
-    userName: {
-      type: String,
-      unique: [true, "This userName is not available"],
-      sparse: true,
-    },
-
     fullName: {
       firstName: {
         type: String,
@@ -51,16 +35,39 @@ const userSchema = new mongoose.Schema(
       required: true,
       select: false,
     },
-    gender: {
-      type: String,
-      default: "NS",
-      enum: ["M", "F", "O", "NS"],
+    isMailVerified: {
+      type: Boolean,
+      default: false,
     },
-    role: {
+    userName: {
       type: String,
-      default: "reader",
-      enum: ["reader", "author"],
+      unique: [true, "This userName is not available"],
+      sparse: true,
     },
+    isAccountVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isPremiumAccount: {
+      type: Boolean,
+      default: false,
+    },
+
+    OtherLinks: {
+      type: [String],
+    },
+    genderInfo: {
+      gender: {
+        type: String,
+        default: "NS",
+        enum: ["M", "F", "O", "NS"],
+      },
+      toBeShown: {
+        type: Boolean,
+        default: false,
+      },
+    },
+
     profilePic: {
       publicId: {
         type: String,
@@ -78,11 +85,52 @@ const userSchema = new mongoose.Schema(
       },
     },
     dateOfBirth: {
-      type: Date,
+      dob: {
+        type: Date,
+      },
+      toBeShown: {
+        type: Boolean,
+        default: true,
+      },
     },
     aboutMe: {
       type: String,
     },
+
+    countryInfo: {
+      country: {
+        type: String,
+        enum: countryNames, // prevents invalid names
+      },
+
+      toBeShown: {
+        type: Boolean,
+        default: false,
+      },
+    },
+
+    profileViews: {
+      type: Number,
+      default: 0,
+    },
+    blogViews: {
+      type: Number,
+      default: 0,
+    },
+    followers: {
+      type: Number,
+      default: 0,
+    },
+    following: {
+      type: Number,
+      default: 0,
+    },
+    role: {
+      type: String,
+      default: "reader",
+      enum: ["reader", "author"],
+    },
+
     requestedForDelete: {
       type: Boolean,
       default: false,
