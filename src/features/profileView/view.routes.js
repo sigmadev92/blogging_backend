@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   authMiddleware,
   isAuthenticated,
-} from "../../middlewares/authentication";
+} from "../../middlewares/authentication.js";
 import {
   addnewView,
   findProfilesIVisited,

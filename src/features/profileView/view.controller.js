@@ -1,4 +1,4 @@
-import CustomError from "../../middlewares/handleError";
+import CustomError from "../../middlewares/handleError.js";
 import {
   addViewRepo,
   findProfilesUserVisitedRepo,
