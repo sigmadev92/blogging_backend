@@ -12,6 +12,10 @@ const viewSchema = new mongoose.Schema(
       ref: "User",
       default: null,
     },
+    totalViews: {
+      type: Number,
+      default: 1,
+    },
   },
   { timestamps: true }
 );

@@ -11,7 +11,7 @@ const addViewRepo = async ({ visitorId, whoseProfile }) => {
 };
 
 const getProfileViewsNumberRepo = async (whoseProfile) => {
-  const result = await Model.aggregate([
+  const result = await ProfileViews.aggregate([
     { $match: { whoseProfile } },
     { $group: { _id: null, total: { $sum: "$totalViews" } } }, // sum X
   ]);

@@ -11,7 +11,8 @@ import { CLIENT_URL } from "./src/config/env.js";
 import blogRouter from "./src/features/blog/blog.routes.js";
 import likeRouter from "./src/features/like/like.routes.js";
 import { authMiddleware } from "./src/middlewares/authentication.js";
-import ProfileViewRouter from "./src/features/profileView/view.routes.js";
+import profileViewRouter from "./src/features/profileView/view.routes.js";
+import blogViewRouter from "./src/features/blogView/view.routes.js";
 const app = express();
 app.use(
   cors({
@@ -37,8 +38,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/api/users", userRouter);
 app.use("/api/blogs", blogRouter);
 app.use("/api/likes", authMiddleware, likeRouter);
-app.use("/api/views/profile/", ProfileViewRouter);
-
+app.use("/api/views/profile", profileViewRouter);
+app.use("/api/views/blogs", blogViewRouter);
 app.use(notFoundRoute);
 app.use(handleError);
 
