@@ -13,6 +13,7 @@ import likeRouter from "./src/features/like/like.routes.js";
 import { authMiddleware } from "./src/middlewares/authentication.js";
 import profileViewRouter from "./src/features/profileView/view.routes.js";
 import blogViewRouter from "./src/features/blogView/view.routes.js";
+import followRouter from "./src/features/follow/follow.routes.js";
 const app = express();
 app.use(
   cors({
@@ -40,6 +41,7 @@ app.use("/api/blogs", blogRouter);
 app.use("/api/likes", authMiddleware, likeRouter);
 app.use("/api/views/profile", profileViewRouter);
 app.use("/api/views/blogs", blogViewRouter);
+app.use("/api/requests",authMiddleware,followRouter)
 app.use(notFoundRoute);
 app.use(handleError);
 
