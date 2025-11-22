@@ -31,9 +31,16 @@ const findNoOfViewedBlogsRepo = async (viewerId) => {
   return await BlogViews.countDocuments({ viewerId });
 };
 
+const findViewedBlogsRepo = async (viewerId) => {
+  return await BlogViews.find({ viewerId }).populate({
+    path: "blogId",
+    select: "_id title description thumbnail",
+  });
+};
 export {
   addViewRepo,
   getTotalViewsRepo,
   findNoOfViewedBlogsRepo,
   getViewersRepo,
+  findViewedBlogsRepo,
 };

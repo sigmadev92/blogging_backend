@@ -2,11 +2,13 @@ import Request from "./request.model.js";
 
 const createRequestRepo = async ({ requestedBy, requestedTo }) => {
   const newRqst = await Request.findOne({ requestedBy, requestedTo });
-  if (newRqst.status === "pending") {
-    throw new Error("The request already exists");
-  }
-  if (newRqst.status === "accepted") {
-    throw new Error("You are already a follower");
+  if (newRqst) {
+    if (newRqst.status === "pending") {
+      throw new Error("The request already exists");
+    }
+    if (newRqst.status === "accepted") {
+      throw new Error("You are already a follower");
+    }
   }
   await Request.insertOne({ requestedBy, requestedTo });
 };
