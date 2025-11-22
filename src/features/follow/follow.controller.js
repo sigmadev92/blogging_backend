@@ -3,6 +3,7 @@ import {
   acceptRequestRepo,
   createRequestRepo,
   deleteRequestRepo,
+  findFollowInfoForOtherRepo,
   findFollowInfoRepo,
   unfollowRemoveRepo,
 } from "./follow.repo.js";
@@ -10,6 +11,12 @@ import {
 const getFollowInfo = async (req, res, next) => {
   const response = await findFollowInfoRepo({ userId: req.USER._id });
   return res.status(200).json({ profiles: response, myId: req.USER._id });
+};
+
+const getFollowInfoForOther = async (req, res, next) => {
+  const { userId } = req.params;
+  const response = await findFollowInfoForOtherRepo({ userId });
+  return res.status(200).json({ profiles: response });
 };
 const createRequest = async (req, res, next) => {
   const { requestedTo } = req.params;
@@ -37,7 +44,7 @@ const acceptRequest = async (req, res, next) => {
   }
   try {
     await acceptRequestRepo({ requestedBy, requestedTo });
-    return res.status(202);
+    return res.status(200).json({ success: true });
   } catch (err) {
     next(new CustomError(400, err.message));
   }
@@ -85,7 +92,7 @@ const removeFollower = async (req, res, next) => {
       requestedTo,
       actionType: "unfollow",
     });
-    return res.status(202);
+    return res.status(200).json({ success: true });
   } catch (err) {
     next(new CustomError(403, err.message));
   }
@@ -99,12 +106,14 @@ const unfollow = async (req, res, next) => {
       requestedTo,
       actionType: "remove",
     });
+    return res.status(200).json({ success: true });
   } catch (err) {
     next(new CustomError(403, err.message));
   }
 };
 export {
   getFollowInfo,
+  getFollowInfoForOther,
   createRequest,
   acceptRequest,
   deleteSentRequest,

@@ -38,10 +38,10 @@ const swaggerDocs = swaggerJSDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/api/users", userRouter);
 app.use("/api/blogs", blogRouter);
-app.use("/api/likes", authMiddleware, likeRouter);
+app.use("/api/likes", likeRouter);
 app.use("/api/views/profile", profileViewRouter);
 app.use("/api/views/blogs", blogViewRouter);
-app.use("/api/requests",authMiddleware,followRouter)
+app.use("/api/requests", followRouter);
 app.use(notFoundRoute);
 app.use(handleError);
 

@@ -57,6 +57,16 @@ const findFollowInfoRepo = async ({ userId }) => {
   });
 };
 
+const findFollowInfoForOtherRepo = async ({ userId }) => {
+  return await Request.find({
+    $or: [{ requestedBy: userId }, { requestedTo: userId }],
+    status: "accepted",
+  }).populate({
+    path: ["requestedBy", "requestedTo"],
+    select: "fullName _id userName profilePic",
+  });
+};
+
 const findPendingRequestRepo = async ({ requestedBy }) => {
   return await Request.find({ requestedBy }).populate({
     path: "requestedTo",
@@ -71,4 +81,5 @@ export {
   deleteRequestRepo,
   unfollowRemoveRepo,
   findFollowInfoRepo,
+  findFollowInfoForOtherRepo,
 };
