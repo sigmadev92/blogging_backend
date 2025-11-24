@@ -1,4 +1,4 @@
-import { deleteImage } from "../../config/cloudinary.js";
+import cloudinary, { deleteImage } from "../../config/cloudinary.js";
 import { NODE_ENV } from "../../config/env.js";
 import CustomError from "../../middlewares/handleError.js";
 import {
@@ -68,6 +68,23 @@ const editProfile = async (req, res, next) => {
   }
   const updatedUser = await updateProfile({ userId: _id, userData });
   return res.status(200).json({ success: true, updatedUser });
+};
+export const uploadProfilePic = async (req, res, next) => {
+  const userId = req.USER._id;
+  const { profilePic } = req.body;
+  try {
+    const result = await cloudinary.uploader.upload(profilePic, {
+      folder: "blog_app/images/profile_pics",
+      public_id: userId,
+      format: "jpg",
+      overwrite: true,
+    });
+
+    res.status(200).json({ url: result.secure_url });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Upload failed" });
+  }
 };
 
 const editProfilePic = async (req, res, next) => {

@@ -108,6 +108,10 @@ const userSchema = new mongoose.Schema(
         default: false,
       },
     },
+    isPublic: {
+      type: Boolean,
+      default: false,
+    },
 
     profileViews: {
       type: Number,
@@ -168,7 +172,7 @@ userSchema.methods.getJWTToken = function () {
       email: this.email,
       role: this.role,
       userName: this.userName,
-      profilePic: this.isProfilePic,
+      fullName: this.fullName,
       isMailVerified: this.isMailVerified,
       isAccountVerified: this.isAccountVerified,
       isPremiumAccount: this.isPremiumAccount,

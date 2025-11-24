@@ -11,6 +11,7 @@ import {
   signin,
   signOut,
   signUp,
+  uploadProfilePic,
 } from "./user.controller.js";
 import validateLoginData from "../../middlewares/validators/user/login.js";
 import {
@@ -35,6 +36,7 @@ userRouter.put(
   upload.single("profilePic"),
   editProfilePic
 );
+userRouter.put("/update/base-64/profile-pic", authMiddleware, uploadProfilePic);
 userRouter.get("/authors", getAuthors);
 userRouter.get("/profile/:medium/:_value", findUserProfile);
 userRouter.put("/remove/profile-pic", authMiddleware, removeProfilePic);

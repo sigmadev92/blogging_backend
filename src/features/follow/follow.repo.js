@@ -1,6 +1,13 @@
 import Request from "./request.model.js";
 
-const createRequestRepo = async ({ requestedBy, requestedTo }) => {
+const checkPrevRequest = async ({ requestedBy, requestedTo }) => {
+  return await Request.findOne({ requestedBy, requestedTo });
+};
+const createRequestRepo = async ({
+  requestedBy,
+  requestedTo,
+  status = "pending",
+}) => {
   const newRqst = await Request.findOne({ requestedBy, requestedTo });
   if (newRqst) {
     if (newRqst.status === "pending") {
@@ -10,7 +17,7 @@ const createRequestRepo = async ({ requestedBy, requestedTo }) => {
       throw new Error("You are already a follower");
     }
   }
-  await Request.insertOne({ requestedBy, requestedTo });
+  await Request.insertOne({ requestedBy, requestedTo, status });
 };
 
 const acceptRequestRepo = async ({ requestedBy, requestedTo }) => {
@@ -75,6 +82,7 @@ const findPendingRequestRepo = async ({ requestedBy }) => {
 };
 
 export {
+  checkPrevRequest,
   createRequestRepo,
   acceptRequestRepo,
   findPendingRequestRepo,
