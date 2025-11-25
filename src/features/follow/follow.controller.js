@@ -81,7 +81,7 @@ const acceptRequest = async (req, res, next) => {
   }
   const me = {
     _id: requestedTo,
-    fullName: req.USER._id,
+    fullName: req.USER.fullName,
     userName: req.USER.userName,
   };
   try {
@@ -178,9 +178,10 @@ const unfollow = async (req, res, next) => {
           userName: req.USER.userName,
         },
         premium: user.isPremiumAccount,
+        myId: requestedTo,
       });
     }
-    return res.status(200).json({ success: true });
+    return res.status(200).json({ myId: requestedBy, hisId: requestedTo });
   } catch (err) {
     next(new CustomError(403, err.message));
   }
