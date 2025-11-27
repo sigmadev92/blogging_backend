@@ -12,15 +12,13 @@ const blogSchema = new mongoose.Schema(
       required: true,
       minlength: 10,
     },
-        authorId:{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true,
-        },
+    authorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 
-
-
-        thumbnail: {
+    thumbnail: {
       publicId: {
         type: String,
       },
@@ -50,11 +48,16 @@ const blogSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    totalViews:{
-        type: Number,
-        default: 0,
-    }  ,
+    totalViews: {
+      type: Number,
+      default: 0,
+    },
     isPublished: {
+      type: Boolean,
+      default: false,
+    },
+
+    isPublic: {
       type: Boolean,
       default: false,
     },

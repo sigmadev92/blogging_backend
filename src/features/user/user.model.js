@@ -5,6 +5,7 @@ import crypto from "crypto";
 import validator from "validator";
 import { JWT_EXPIRES_IN, JWT_SECRET_KEY } from "../../config/env.js";
 import countries from "i18n-iso-countries";
+import { boolean, string } from "joi";
 const countryNames = Object.values(countries.getNames("en"));
 
 const userSchema = new mongoose.Schema(
@@ -15,19 +16,24 @@ const userSchema = new mongoose.Schema(
       unique: [true, "email already registered"],
       validate: [validator.isEmail, "please enter a valid email"],
     },
+
     fullName: {
       firstName: {
         type: String,
         required: true,
         minlength: 2,
+        maxlength: 15,
       },
       middleName: {
         type: String,
+        minlength: 1,
+        maxlength: 10,
       },
       lastName: {
         type: String,
         required: true,
         minlength: 2,
+        maxlength: 15,
       },
     },
     password: {
@@ -35,14 +41,34 @@ const userSchema = new mongoose.Schema(
       required: true,
       select: false,
     },
-    isMailVerified: {
-      type: Boolean,
-      default: false,
+    OtherLinks: {
+      type: [String],
     },
+    gender: {
+      type: String,
+      default: "NS",
+      enum: ["M", "F", "O", "NS"],
+    },
+
+    profilePic: {
+      publicId: {
+        type: String,
+      },
+    },
+    thumbnail: {
+      publicId: {
+        type: String,
+      },
+    },
+
     userName: {
       type: String,
       unique: [true, "This userName is not available"],
       sparse: true,
+    },
+    isMailVerified: {
+      type: Boolean,
+      default: false,
     },
     isAccountVerified: {
       type: Boolean,
@@ -52,62 +78,56 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-
-    OtherLinks: {
-      type: [String],
-    },
-    genderInfo: {
-      gender: {
-        type: String,
-        default: "NS",
-        enum: ["M", "F", "O", "NS"],
-      },
-      toBeShown: {
-        type: Boolean,
-        default: false,
-      },
+    emailToBeShown: {
+      type: Boolean,
+      default: false,
     },
 
-    profilePic: {
-      publicId: {
-        type: String,
-      },
-      secure_url: {
-        type: String,
-      },
+    genderToBeShown: {
+      type: Boolean,
+      default: false,
     },
-    thumbnail: {
-      publicId: {
-        type: String,
-      },
-      secure_url: {
-        type: String,
-      },
+    profilePicToBeShown: {
+      type: Boolean,
+      default: true,
     },
-    dateOfBirth: {
-      dob: {
-        type: Date,
-      },
-      toBeShown: {
-        type: Boolean,
-        default: true,
-      },
+
+    thumbnailToBeShown: {
+      type: Boolean,
+      default: true,
     },
+
+    dobSet: {
+      type: Boolean,
+      default: false,
+    },
+    dob: {
+      type: Date,
+    },
+    dobToBeShown: {
+      type: Boolean,
+      default: false,
+    },
+
     aboutMe: {
       type: String,
+      max,
     },
 
-    countryInfo: {
-      country: {
-        type: String,
-        enum: countryNames, // prevents invalid names
-      },
-
-      toBeShown: {
-        type: Boolean,
-        default: false,
-      },
+    countrySet: {
+      type: Boolean,
+      default: false,
     },
+    country: {
+      type: String,
+      enum: countryNames, // prevents invalid names
+    },
+
+    countryToBeShown: {
+      type: Boolean,
+      default: true,
+    },
+
     isPublic: {
       type: Boolean,
       default: false,
@@ -117,22 +137,45 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    profileViewsToBeShown: {
+      type: Boolean,
+      default: true,
+    },
+
     blogViews: {
       type: Number,
       default: 0,
     },
-    followers: {
-      type: Number,
-      default: 0,
+    blogViewsToBeShown: {
+      type: Boolean,
+      default: false,
     },
-    following: {
-      type: Number,
-      default: 0,
-    },
+
     role: {
       type: String,
+      //reader means the user has only read the blogs
+      //writer means the user has written at least one blog sometime
       default: "reader",
       enum: ["reader", "author"],
+    },
+
+    getFund: {
+      setup: {
+        type: Boolean,
+        default: true,
+      },
+      want: {
+        type: Boolean,
+        default: true,
+      },
+      min: {
+        type: Number,
+        default: 10, //INR
+      },
+      toBeShown: {
+        type: Boolean,
+        default: true,
+      },
     },
 
     requestedForDelete: {
@@ -143,6 +186,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
     deletedOn: {
       type: Date,
     },
