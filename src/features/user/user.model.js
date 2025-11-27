@@ -5,7 +5,6 @@ import crypto from "crypto";
 import validator from "validator";
 import { JWT_EXPIRES_IN, JWT_SECRET_KEY } from "../../config/env.js";
 import countries from "i18n-iso-countries";
-import { boolean, string } from "joi";
 const countryNames = Object.values(countries.getNames("en"));
 
 const userSchema = new mongoose.Schema(
@@ -54,9 +53,15 @@ const userSchema = new mongoose.Schema(
       publicId: {
         type: String,
       },
+      version: {
+        type: String,
+      },
     },
     thumbnail: {
       publicId: {
+        type: String,
+      },
+      version: {
         type: String,
       },
     },
@@ -111,7 +116,7 @@ const userSchema = new mongoose.Schema(
 
     aboutMe: {
       type: String,
-      max,
+      maxlength: 500,
     },
 
     countrySet: {

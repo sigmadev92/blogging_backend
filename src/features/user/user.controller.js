@@ -69,7 +69,9 @@ const editProfile = async (req, res, next) => {
   const updatedUser = await updateProfile({ userId: _id, userData });
   return res.status(200).json({ success: true, updatedUser });
 };
-export const uploadProfilePic = async (req, res, next) => {
+
+//base64 image
+const uploadProfilePic = async (req, res, next) => {
   const userId = req.USER._id;
   const { profilePic } = req.body;
   try {
@@ -80,6 +82,8 @@ export const uploadProfilePic = async (req, res, next) => {
       overwrite: true,
     });
 
+    console.log(result);
+
     res.status(200).json({ url: result.secure_url });
   } catch (err) {
     console.error(err);
@@ -89,18 +93,21 @@ export const uploadProfilePic = async (req, res, next) => {
 
 const editProfilePic = async (req, res, next) => {
   //Guaranteed that a valid picture is saved on cloudinary and link is present in req.file;
+  console.log("This path is for formData image");
   console.log(req.file); //single file
-  const { path: secure_url, filename: publicId } = req.file;
+  const { filename: publicId, path } = req.file;
+
+  const version = path.slice(8).split("/")[4];
   const userId = req.USER._id;
   try {
     await updateProfile({
       userId,
       userData: {
-        "profilePic.secure_url": secure_url,
         "profilePic.publicId": publicId,
+        "profilePic.version": version,
       },
     });
-    return res.status(200).json({ success: true, secure_url, publicId });
+    return res.status(200).json({ publicId, version });
   } catch (error) {
     return next(new CustomError(500, error.message));
   }
@@ -115,7 +122,6 @@ const removeProfilePic = async (req, res, next) => {
     if (!publicId) {
       return next(new CustomError(400, "No profile Picture found"));
     }
-    console.log("sas");
     const isDeleted = await deleteImage(publicId);
     if (!isDeleted) {
       return next(new CustomError(500, "Problem in deleting image from Hub"));
@@ -126,6 +132,8 @@ const removeProfilePic = async (req, res, next) => {
     return next(new CustomError(500, error.message));
   }
 };
+
+const removeProfilePicByPublicId = async (req, res, next) => {};
 
 const signOut = async (req, res, next) => {
   res
@@ -201,4 +209,6 @@ export {
   removeProfilePic,
   findUserProfile,
   getAuthors,
+  uploadProfilePic,
+  removeProfilePicByPublicId,
 };

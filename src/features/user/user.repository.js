@@ -48,10 +48,10 @@ const updateProfilePic = async ({ userId, imageURL }) => {
 const removeProfilePicRepo = async (userId) => {
   const user = await findUserById(userId);
   const publicId = user.profilePic.publicId;
-  console.log(user, publicId);
+  console.log(publicId);
   await Users.updateOne(
     { _id: userId },
-    { $set: { "profilePic.secure_url": "", "profilePic.publicId": "" } }
+    { $set: { "profilePic.publicId": "", "profilePic.version": "" } }
   );
 
   return publicId;

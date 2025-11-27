@@ -25,6 +25,8 @@ const storage = new CloudinaryStorage({
       if (isImage) {
         if (req.imgType === "profilePic") {
           endFolder = folder + "/images/profile_pics";
+        } else if (req.imgType === "profileThumbnail") {
+          endFolder = folder + "/images/profile_thumbnail";
         } else if (req.imgType === "blog_thumbnail") {
           endFolder = folder + "/images/blog_thumbnails/" + userId;
           public_id = req.blogId;
@@ -41,10 +43,10 @@ const storage = new CloudinaryStorage({
       // Return Cloudinary upload params
       return {
         folder: endFolder,
-        public_id, // filename without extension
-        format: ext, // keep original extension
-        resource_type: isPdf ? "raw" : "image", // PDFs are 'raw', images are 'image'
-        allowed_formats: ["jpg", "jpeg", "png", "webp", "pdf"],
+        public_id: `${userId}`, // <--- only the userId as filename
+        format: "png", // required to force .png
+        overwrite: true, // <--- upload same name every time
+        invalidate: true,
       };
     } catch (error) {
       console.log(error);
