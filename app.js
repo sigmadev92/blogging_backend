@@ -39,7 +39,7 @@ const swaggerDocs = swaggerJSDoc(swaggerOptions);
 //swagger UI-route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/api/users", userRouter);
-app.use("/api/users/settings", authMiddleware, userSettingsRouter);
+app.use("/api/settings/users", authMiddleware, userSettingsRouter);
 app.use("/api/blogs", blogRouter);
 app.use("/api/likes", likeRouter);
 app.use("/api/views/profile", profileViewRouter);

@@ -63,6 +63,8 @@ const editProfile = async (req, res, next) => {
   const { _id } = req.USER;
   const userData = req.body;
 
+  console.log(userData);
+
   if (!userData) {
     return next(new CustomError(400, "Please send request in JSON format"));
   }
@@ -107,6 +109,7 @@ const editProfilePic = async (req, res, next) => {
         "profilePic.version": version,
       },
     });
+    console.log("Profile pic uploaded successfully", version);
     return res.status(200).json({ publicId, version });
   } catch (error) {
     return next(new CustomError(500, error.message));
