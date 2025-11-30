@@ -8,16 +8,26 @@ const findBlogByIdRepo = async (blogId) => {
   return blog;
 };
 const findAllRepo = async () => {
-  return (await Blogs.find().populate({
+  const blogs = await Blogs.find({
+    isPublic: true,
+    isPublished: true,
+  }).populate({
     path: "authorId",
     select: "fullName _id",
-  }))
+  });
+  console.log(blogs.length);
+  return blogs;
 };
 
-const increaseViewsCountRepo = async(blogId)=>{
-    await Blogs.updateOne({_id:blogId},{$inc:{totalViews:1}});
-}
+const increaseViewsCountRepo = async (blogId) => {
+  await Blogs.updateOne({ _id: blogId }, { $inc: { totalViews: 1 } });
+};
 
+const toggleVisibilityRepo = async ({ authorId, blogId }) => {
+  await Blogs.updateOne({ authorId, _id: blogId }, [
+    { $set: { isPublic: { $not: ["$isPublic"] } } },
+  ]);
+};
 
 const findBlogsWithIdsRepo = async (blogIds) => {
   const blogs = await Blogs.find({ _id: { $in: blogIds } }).populate({
@@ -103,7 +113,7 @@ export {
   findBlogByIdRepo,
   findAllRepo,
   findBlogsWithIdsRepo,
-    increaseViewsCountRepo,
+  increaseViewsCountRepo,
   addNewBlogRepo,
   updateBlogRepo,
   publishBlogRepo,
@@ -112,4 +122,5 @@ export {
   isValidBlogRepo,
   findBlogsOfAuthorRepo,
   findAuthorIdRepo,
+  toggleVisibilityRepo,
 };

@@ -11,6 +11,7 @@ import {
   getAllBlogs,
   getMyBlogs,
   publishBlog,
+  toggleVisibility,
 } from "./blog.controller.js";
 import upload from "../../config/multerCloudinary.js";
 import { isValidBlog } from "../../middlewares/validators/blog/check.js";
@@ -39,11 +40,18 @@ blogRouter.get("/public/one/:blogId", findBlogById);
 // to get all the blogs of loggedIN user
 blogRouter.get("/my-blogs", authMiddleware, getMyBlogs);
 
-//for getting all blogs
+blogRouter.get("/one/:blogId", authMiddleware, isValidBlog, findBlogById);
+//for getting all published blogs
 blogRouter.get("/all", getAllBlogs);
 // for getting all blogs of an author
 blogRouter.get("/all/:authorId", findAllBlogsOfAuthor);
 blogRouter.put("/publish/:blogId", authMiddleware, isValidBlog, publishBlog);
+blogRouter.put(
+  "/toggle/:blogId",
+  authMiddleware,
+  isValidBlog,
+  toggleVisibility
+);
 blogRouter.put("/edit/:blogId", authMiddleware, isValidBlog, editBlog);
 blogRouter.delete("/:blogId", authMiddleware, isValidBlog, deleteBlog);
 export default blogRouter;

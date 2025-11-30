@@ -7,7 +7,7 @@ import {
   findFollowInfoRepo,
   unfollowRemoveRepo,
 } from "./follow.repo.js";
-import { findUserById } from "../user/user.repository.js";
+import { findUserById, followUserRepo } from "../user/user.repository.js";
 import { onlineUsers } from "../../config/socket.js";
 const getFollowInfo = async (req, res, next) => {
   const response = await findFollowInfoRepo({ userId: req.USER._id });
@@ -103,6 +103,11 @@ const acceptRequest = async (req, res, next) => {
 const deleteSentRequest = async (req, res, next) => {
   const { requestedTo } = req.params;
   const requestedBy = req.USER._id;
+  const me = await followUserRepo(requestedBy);
+  console.log("on dete sent rqst", me);
+  if (!me) {
+    return next(new CustomError(403, "Invalid Id"));
+  }
   if (!requestedBy || !requestedTo) {
     return next(new CustomError(400, "Missing data"));
   }
@@ -111,6 +116,13 @@ const deleteSentRequest = async (req, res, next) => {
   }
   try {
     await deleteRequestRepo({ requestedBy, requestedTo });
+    const io = req.app.get("io");
+    const receiverSocketId = onlineUsers[requestedTo];
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("user-deleted-their-sent-request", {
+        user: { ...me, _id: requestedBy },
+      });
+    }
     res.status(200).json({ success: true });
   } catch (error) {
     next(new CustomError(400, error.message));
@@ -120,6 +132,7 @@ const deleteSentRequest = async (req, res, next) => {
 const deleteReceivedRqst = async (req, res, next) => {
   const { requestedBy } = req.params;
   const requestedTo = req.USER._id;
+  const me = await followUserRepo(requestedTo);
   if (!requestedBy || !requestedTo) {
     return next(new CustomError(400, "Missing data"));
   }
@@ -128,6 +141,13 @@ const deleteReceivedRqst = async (req, res, next) => {
   }
   try {
     await deleteRequestRepo({ requestedBy, requestedTo });
+    const io = req.app.get("io");
+    const receiverSocketId = onlineUsers[requestedBy];
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("user-deleted-my-request", {
+        user: me,
+      });
+    }
     res.status(200).json({ success: true });
   } catch (error) {
     next(new CustomError(400, error.message));

@@ -9,14 +9,16 @@ import {
   findBlogsWithIdsRepo,
   getMyBlogsRepo,
   publishBlogRepo,
+  toggleVisibilityRepo,
   updateBlogRepo,
 } from "./blog.repository.js";
+import { updateProfile } from "../user/user.repository.js";
 const findBlogById = async (req, res, next) => {
   const blog = await findBlogByIdRepo(req.params.blogId);
   if (!blog) {
     return next(new CustomError(404, "Blog Not found"));
   }
-  res.status(200).json({ success: true, blog });
+  res.status(200).json({ blog });
 };
 
 const getAllBlogs = async (req, res, next) => {
@@ -74,12 +76,23 @@ const publishBlog = async (req, res, next) => {
     const blog = await publishBlogRepo({
       authorId,
       blogId,
-      data: { isPublished: true },
+      data: { isPublished: true, isPublic: true },
     });
+    await updateProfile({ userId: authorId, userDate: { role: "author" } });
     return res.status(200).json({ success: true, blog });
   } catch (error) {
     next(error);
   }
+};
+
+const toggleVisibility = async (req, res, next) => {
+  console.log("arrived on toggle visibility controller");
+  await toggleVisibilityRepo({
+    authorId: req.USER._id,
+    blogId: req.params.blogId,
+  });
+
+  return res.status(200).json({ success: true });
 };
 
 //no thumbnail
@@ -149,4 +162,5 @@ export {
   findBlogById,
   findAllBlogsOfAuthor,
   findBlogsWithIds,
+  toggleVisibility,
 };

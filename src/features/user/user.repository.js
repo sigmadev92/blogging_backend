@@ -4,6 +4,9 @@ const findUserById = async (userId) => {
   return await Users.findById(userId);
 };
 
+const followUserRepo = async (userId) => {
+  return await Users.findById(userId).select("fullName profilePic userName");
+};
 const findUserByUsername = async (userName) => {
   return await Users.findOne({ userName });
 };
@@ -71,6 +74,7 @@ const findAuthorsRepo = async () => {
 };
 export {
   findUserById,
+  followUserRepo,
   addNewUser,
   findUserByMail,
   findUserByUsername,
