@@ -1,29 +1,40 @@
 import { Router } from "express";
-import validateRegData from "../../middlewares/validators/user/signup.js";
+import validateRegData from "../../../middlewares/validators/user/signup.js";
 import {
   deleteUserAccount,
   editProfile,
   editProfilePic,
   findUserProfile,
+  generatePasswordToken,
   getAuth,
   getAuthors,
   removeProfilePic,
+  resetPassword,
   signin,
   signOut,
   signUp,
   uploadProfilePic,
-} from "./user.controller.js";
-import validateLoginData from "../../middlewares/validators/user/login.js";
+} from "../controllers/user.controller.js";
+import validateLoginData from "../../../middlewares/validators/user/login.js";
 import {
   authMiddleware,
   protectExposed,
-} from "../../middlewares/authentication.js";
-import upload from "../../config/multerCloudinary.js";
+} from "../../../middlewares/authentication.js";
+import upload from "../../../config/multerCloudinary.js";
+import { verifyEmail } from "../controllers/settings.controller.js";
 
 const userRouter = Router();
 
 userRouter.post("/signup", protectExposed, validateRegData, signUp);
-userRouter.post("/signin", protectExposed, validateLoginData, signin);
+userRouter.get("/verify-email", verifyEmail);
+userRouter.post("/password/recover", generatePasswordToken);
+userRouter.put("/password/reset", resetPassword);
+userRouter.userRouter.post(
+  "/signin",
+  protectExposed,
+  validateLoginData,
+  signin
+);
 userRouter.get("/signout", authMiddleware, signOut);
 userRouter.get("/auth", authMiddleware, getAuth);
 userRouter.put(
