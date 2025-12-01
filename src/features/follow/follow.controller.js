@@ -7,7 +7,10 @@ import {
   findFollowInfoRepo,
   unfollowRemoveRepo,
 } from "./follow.repo.js";
-import { findUserById, followUserRepo } from "../user/user.repository.js";
+import {
+  findUserById,
+  followUserRepo,
+} from "../user/repositories/user.repository.js";
 import { onlineUsers } from "../../config/socket.js";
 const getFollowInfo = async (req, res, next) => {
   const response = await findFollowInfoRepo({ userId: req.USER._id });

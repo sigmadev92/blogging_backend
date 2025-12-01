@@ -33,12 +33,7 @@ const registrationHTML = ({ fullName, verifyLink }) => {
     <p>Thanks for Joining our platform.</p>
 
     <b>Regards</b>
-    <br />
-    <br />
-    <br />
-    <br />
-    <b>DEVANSH RAGHUWANSHI</b>
-    <p>Regional Sales Executive</p>
+    <b>Team BlogsEra</b>
   </body>
 </html>
 `;

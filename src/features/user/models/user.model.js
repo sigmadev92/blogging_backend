@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 import validator from "validator";
-import { JWT_EXPIRES_IN, JWT_SECRET_KEY } from "../../config/env.js";
+import { JWT_EXPIRES_IN, JWT_SECRET_KEY } from "../../../config/env.js";
 import countries from "i18n-iso-countries";
 const countryNames = Object.values(countries.getNames("en"));
 

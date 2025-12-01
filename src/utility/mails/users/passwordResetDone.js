@@ -1,4 +1,4 @@
-const passwordResetDoneMail = async ({ fullName }) => {
+const passwordResetDoneMail = ({ fullName }) => {
   return `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -16,12 +16,8 @@ const passwordResetDoneMail = async ({ fullName }) => {
       
     <b>Regards</b>
     <br />
-    <br />
-    <br />
-    <br />
-    <b>DEVANSH RAGHUWANSHI</b>
-    <p>Regional Sales Executive</p>
-    <b>BlogsEra</b>
+  
+    <b>Team BlogsEra</b>
   </body>
 </html>
 `;

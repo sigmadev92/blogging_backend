@@ -5,10 +5,7 @@ import CustomError from "../../../middlewares/handleError.js";
 import passwordResetDoneMail from "../../../utility/mails/users/passwordResetDone.js";
 import recoverPasswordMail from "../../../utility/mails/users/recoverPassword.js";
 import registrationHTML from "../../../utility/mails/users/registration.js";
-import {
-  generatePasswordTokenRepo,
-  verifyPasswordToken,
-} from "../repositories/passwordToken.repo.js";
+
 import {
   addNewUser,
   findUserById,
@@ -19,7 +16,10 @@ import {
   findUserByUsername,
   findAuthorsRepo,
 } from "../repositories/user.repository.js";
-import { createToken } from "../repositories/verification.repo.js";
+import {
+  generateTokenRepo,
+  verifyPasswordTokenRepo,
+} from "../repositories/verification.repo.js";
 
 const signUp = async (req, res, next) => {
   console.log("On sign up controller");
@@ -36,7 +36,10 @@ const signUp = async (req, res, next) => {
       }
 
       //send mail
-      const rawToken = await createToken(newUser._id);
+      const rawToken = await generateTokenRepo({
+        userId: newUser._id,
+        tokenType: "emailVerify",
+      });
       const verifyLink = `${CLIENT_URL}/verify-email?rawToken=${rawToken}&userId=${newUser._id}`;
 
       const htmlContent = registrationHTML({ fullName, verifyLink });
@@ -228,32 +231,44 @@ const getAuthors = async (req, res, next) => {
 
 const generatePasswordToken = async (req, res, next) => {
   const { email } = req.body;
+  if (!email) {
+    return next(new CustomError(400, "The email is missing."));
+  }
   const user = await findUserByMail(email);
-  if (user) {
+  if (!user) {
     return next(new CustomError(403, "This email is not registered with us"));
   }
   const userId = user._id;
   const { fullName } = user;
-  const rawToken = await generatePasswordTokenRepo(userId);
-  const verifyLink = `${CLIENT_URL}/reset-password?rawToken=${rawToken}&userId=${userId}`;
-  const htmlContent = recoverPasswordMail({ fullName, verifyLink });
-
-  await sendTheMail({
-    htmlContent,
-    receiverMail: email,
-    subject: "Recover Password",
-  });
-  return res.status(200).json({
-    message: `Mail Sent successfully to ${email} for further instructions.`,
-  });
+  try {
+    const rawToken = await generateTokenRepo({
+      userId,
+      tokenType: "passwordReset",
+    });
+    console.log("rawToken generated");
+    const verifyLink = `${CLIENT_URL}/out/password/reset?rawToken=${rawToken}&userId=${userId}`;
+    const htmlContent = recoverPasswordMail({ fullName, verifyLink });
+    await sendTheMail({
+      htmlContent,
+      receiverMail: email,
+      subject: "Recover Your Password",
+    });
+    console.log("mail sent");
+    return res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    return next(new CustomError(500, error.message));
+  }
 };
 const resetPassword = async (req, res, next) => {
   const { rawToken, userId } = req.query;
+  console.log("arrived on reset passsword");
   if (!rawToken || !userId) {
     return next(new CustomError(400, "Invalid query"));
   }
   const { password, confirmPassword } = req.body;
-  if (!password || !confirmPassword || !email) {
+  if (!password || !confirmPassword) {
     return next(new CustomError(400, "Missing Data"));
   }
   if (password !== confirmPassword) {
@@ -264,17 +279,18 @@ const resetPassword = async (req, res, next) => {
       )
     );
   }
-
+  console.log("c;eared");
   try {
-    await verifyPasswordToken({ userId, rawToken, password });
+    await verifyPasswordTokenRepo({ userId, rawToken, password });
+    console.log("cleared-2");
     const user = await findUserById(userId);
     const htmlContent = passwordResetDoneMail({ fullName: user.fullName });
     await sendTheMail({
       subject: "Password reset successfully",
-      receiverMail: email,
+      receiverMail: user.email,
       htmlContent,
     });
-    return res.status(200).json({ message: "Password Reset Successfully" });
+    return res.status(200).json({ success: true });
   } catch (error) {
     return next(new CustomError(500, error.message));
   }

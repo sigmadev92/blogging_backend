@@ -1,4 +1,4 @@
-const recoverPasswordMail = async ({ fullName, verifyLink }) => {
+const recoverPasswordMail = ({ fullName, verifyLink }) => {
   return `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -23,12 +23,8 @@ const recoverPasswordMail = async ({ fullName, verifyLink }) => {
     <br/>
     <b>Regards</b>
     <br />
-    <br />
-    <br />
-    <br />
-    <b>DEVANSH RAGHUWANSHI</b>
-    <p>Regional Sales Executive</p>
-    <b>BlogsEra</b>
+    
+    <b>Team BlogsEra</b>
   </body>
 </html>
 `;

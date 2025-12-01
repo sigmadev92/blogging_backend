@@ -1,4 +1,4 @@
-const emailVerificatinMail = async ({ fullName, verifyLink }) => {
+const emailVerificatinMail = ({ fullName, verifyLink }) => {
   return `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -25,11 +25,7 @@ const emailVerificatinMail = async ({ fullName, verifyLink }) => {
     <br/>
     <b>Regards</b>
     <br />
-    <br />
-    <br />
-    <br />
-    <b>DEVANSH RAGHUWANSHI</b>
-    <p>Regional Sales Executive</p>
+    <b>Team BlogsEra</b>
   </body>
 </html>
 `;

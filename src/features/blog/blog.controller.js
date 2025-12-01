@@ -12,7 +12,7 @@ import {
   toggleVisibilityRepo,
   updateBlogRepo,
 } from "./blog.repository.js";
-import { updateProfile } from "../user/user.repository.js";
+import { updateProfile } from "../user/repositories/user.repository.js";
 const findBlogById = async (req, res, next) => {
   const blog = await findBlogByIdRepo(req.params.blogId);
   if (!blog) {

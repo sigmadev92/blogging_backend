@@ -12,9 +12,10 @@ export default async function sendTheMail({
   receiverMail,
   subject,
   htmlContent,
+  from = '"BlogsEra" <no-reply@blogsEra.com>',
 }) {
   await transporter.sendMail({
-    from: NODEMAILER_MAIL,
+    from,
     to: receiverMail,
     subject,
     html: htmlContent,

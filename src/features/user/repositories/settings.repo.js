@@ -1,4 +1,4 @@
-import Users from "./user.model.js";
+import Users from "../models/user.model.js";
 
 const toggleVisibilityRepo = async (userId) => {
   const user = await Users.findById(userId);

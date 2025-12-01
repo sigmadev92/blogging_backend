@@ -28,13 +28,8 @@ const userRouter = Router();
 userRouter.post("/signup", protectExposed, validateRegData, signUp);
 userRouter.get("/verify-email", verifyEmail);
 userRouter.post("/password/recover", generatePasswordToken);
-userRouter.put("/password/reset", resetPassword);
-userRouter.userRouter.post(
-  "/signin",
-  protectExposed,
-  validateLoginData,
-  signin
-);
+userRouter.post("/password/reset", resetPassword);
+userRouter.post("/signin", protectExposed, validateLoginData, signin);
 userRouter.get("/signout", authMiddleware, signOut);
 userRouter.get("/auth", authMiddleware, getAuth);
 userRouter.put(
