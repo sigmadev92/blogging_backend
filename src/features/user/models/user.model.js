@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 import validator from "validator";
-import { JWT_EXPIRES_IN, JWT_SECRET_KEY } from "../../config/env.js";
+import { JWT_EXPIRES_IN, JWT_SECRET_KEY } from "../../../config/env.js";
 import countries from "i18n-iso-countries";
 const countryNames = Object.values(countries.getNames("en"));
 
@@ -194,8 +193,6 @@ const userSchema = new mongoose.Schema(
     deletedOn: {
       type: Date,
     },
-    resetPasswordToken: String,
-    resetPasswordExpire: Date,
   },
   {
     timestamps: true,
@@ -234,21 +231,6 @@ userSchema.methods.getJWTToken = function () {
 // user password compare
 userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
-};
-
-// generatePasswordResetToken
-userSchema.methods.getResetPasswordToken = async function () {
-  const resetToken = crypto.randomBytes(20).toString("hex");
-
-  // hashing and updating user resetPasswordToken
-  this.resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
-
-  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
-
-  return resetToken;
 };
 
 const Users = mongoose.model("User", userSchema);

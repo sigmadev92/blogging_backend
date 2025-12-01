@@ -1,6 +1,11 @@
-import cloudinary, { deleteImage } from "../../config/cloudinary.js";
-import { NODE_ENV } from "../../config/env.js";
-import CustomError from "../../middlewares/handleError.js";
+import cloudinary, { deleteImage } from "../../../config/cloudinary.js";
+import { CLIENT_URL, NODE_ENV } from "../../../config/env.js";
+import sendTheMail from "../../../config/nodemailer.js";
+import CustomError from "../../../middlewares/handleError.js";
+import passwordResetDoneMail from "../../../utility/mails/users/passwordResetDone.js";
+import recoverPasswordMail from "../../../utility/mails/users/recoverPassword.js";
+import registrationHTML from "../../../utility/mails/users/registration.js";
+
 import {
   addNewUser,
   findUserById,
@@ -10,18 +15,41 @@ import {
   removeProfilePicRepo,
   findUserByUsername,
   findAuthorsRepo,
-} from "./user.repository.js";
+} from "../repositories/user.repository.js";
+import {
+  generateTokenRepo,
+  verifyPasswordTokenRepo,
+} from "../repositories/verification.repo.js";
 
 const signUp = async (req, res, next) => {
-  console.log("here also");
+  console.log("On sign up controller");
   try {
     const response = await addNewUser(req.body);
+    console.log("user created");
+
     if (response.code === 201) {
-      const { email } = req.body;
+      const { email, fullName } = req.body;
+      const { newUser } = response.result;
       if (email.split("@")[1] === "test.com") {
         //don't send Email Now
         return res.status(response.code).json(response.result);
       }
+
+      //send mail
+      const rawToken = await generateTokenRepo({
+        userId: newUser._id,
+        tokenType: "emailVerify",
+      });
+      const verifyLink = `${CLIENT_URL}/verify-email?rawToken=${rawToken}&userId=${newUser._id}`;
+
+      const htmlContent = registrationHTML({ fullName, verifyLink });
+      await sendTheMail({
+        receiverMail: email,
+        htmlContent,
+        subject: "Registration Successful. Verify your mail",
+      });
+
+      console.log("mail sent");
     }
     //will setup mail when authentication is done
     return res.status(response.code).json(response.result);
@@ -201,6 +229,73 @@ const getAuthors = async (req, res, next) => {
   return res.status(200).json({ authors });
 };
 
+const generatePasswordToken = async (req, res, next) => {
+  const { email } = req.body;
+  if (!email) {
+    return next(new CustomError(400, "The email is missing."));
+  }
+  const user = await findUserByMail(email);
+  if (!user) {
+    return next(new CustomError(403, "This email is not registered with us"));
+  }
+  const userId = user._id;
+  const { fullName } = user;
+  try {
+    const rawToken = await generateTokenRepo({
+      userId,
+      tokenType: "passwordReset",
+    });
+    console.log("rawToken generated");
+    const verifyLink = `${CLIENT_URL}/out/password/reset?rawToken=${rawToken}&userId=${userId}`;
+    const htmlContent = recoverPasswordMail({ fullName, verifyLink });
+    await sendTheMail({
+      htmlContent,
+      receiverMail: email,
+      subject: "Recover Your Password",
+    });
+    console.log("mail sent");
+    return res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    return next(new CustomError(500, error.message));
+  }
+};
+const resetPassword = async (req, res, next) => {
+  const { rawToken, userId } = req.query;
+  console.log("arrived on reset passsword");
+  if (!rawToken || !userId) {
+    return next(new CustomError(400, "Invalid query"));
+  }
+  const { password, confirmPassword } = req.body;
+  if (!password || !confirmPassword) {
+    return next(new CustomError(400, "Missing Data"));
+  }
+  if (password !== confirmPassword) {
+    return next(
+      new CustomError(
+        400,
+        "Both password and confirm passwords fields should be same"
+      )
+    );
+  }
+  console.log("c;eared");
+  try {
+    await verifyPasswordTokenRepo({ userId, rawToken, password });
+    console.log("cleared-2");
+    const user = await findUserById(userId);
+    const htmlContent = passwordResetDoneMail({ fullName: user.fullName });
+    await sendTheMail({
+      subject: "Password reset successfully",
+      receiverMail: user.email,
+      htmlContent,
+    });
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return next(new CustomError(500, error.message));
+  }
+};
+
 export {
   signUp,
   signin,
@@ -214,4 +309,6 @@ export {
   getAuthors,
   uploadProfilePic,
   removeProfilePicByPublicId,
+  generatePasswordToken,
+  resetPassword,
 };

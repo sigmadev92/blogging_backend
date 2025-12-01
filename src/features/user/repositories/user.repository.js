@@ -1,4 +1,4 @@
-import Users from "./user.model.js";
+import Users from "../models/user.model.js";
 
 const findUserById = async (userId) => {
   return await Users.findById(userId);

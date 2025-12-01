@@ -17,7 +17,7 @@ const validateLoginData = (req, res, next) => {
       .required(),
 
     password: Joi.string()
-      .pattern(/^[A-Za-z0-9@#]{8,12}$/)
+      .pattern(/^[A-Za-z0-9@#_$]{8,12}$/)
       .message(
         "Password must be 8-12 characters long and can only contain letters, numbers, @, and #."
       )
