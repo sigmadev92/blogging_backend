@@ -1,4 +1,13 @@
 import Users from "../models/user.model.js";
+import { findUserById } from "./user.repository.js";
+
+function canChangeUsername(user) {
+  if (!user.userNameLastChangedAt) return true;
+
+  const sixMonths = 1000 * 60 * 60 * 24 * 30 * 6;
+
+  return Date.now() - user.userNameLastChangedAt.getTime() > sixMonths;
+}
 
 const toggleVisibilityRepo = async (userId) => {
   const user = await Users.findById(userId);
@@ -31,4 +40,20 @@ const toggleDisplayParamRepo = async (userId, param) => {
     throw new Error("Invalid Querry");
   }
 };
-export { toggleVisibilityRepo, toggleDisplayParamRepo };
+
+const setUsernameRepo = async ({ userId, userName }) => {
+  const user = await findUserById(userId);
+
+  const canChange = canChangeUsername(user);
+  if (!canChange) {
+    throw new Error("Cannot change userName for now");
+  }
+
+  user.userName = userName;
+  user.userNameLastChangedAt = Date.now();
+
+  await user.save();
+
+  return { userNameLastChangedAt: user.userNameLastChangedAt };
+};
+export { toggleVisibilityRepo, toggleDisplayParamRepo, setUsernameRepo };

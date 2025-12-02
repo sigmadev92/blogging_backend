@@ -68,7 +68,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       unique: [true, "This userName is not available"],
       sparse: true,
+      match: /^[a-z][a-z0-9_-]{0,29}$/,
     },
+    userNameLastChangedAt: { type: Date, default: null },
     isMailVerified: {
       type: Boolean,
       default: false,

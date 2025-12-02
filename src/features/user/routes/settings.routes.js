@@ -4,6 +4,7 @@ import {
   changeEmailRequest,
   changePassword,
   changePasswordRequest,
+  setUsername,
   toggleDisplayParam,
   toggleVisibility,
   verifyEmail,
@@ -16,7 +17,7 @@ router.put("/toggle/visibility", toggleVisibility);
 router.put("/toggle/display/:param", toggleDisplayParam);
 router.post("/email/verify-request", verifyEmailRequest);
 router.get("/email/verify", verifyEmail);
-
+router.put("/set/username", setUsername);
 //these routes will lead to logout;
 router.put("/email/change-request", changeEmailRequest);
 router.put("/email/change", changeEmail);

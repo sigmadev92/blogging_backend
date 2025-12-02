@@ -15,7 +15,7 @@ import { authMiddleware } from "./src/middlewares/authentication.js";
 import profileViewRouter from "./src/features/profileView/view.routes.js";
 import blogViewRouter from "./src/features/blogView/view.routes.js";
 import followRouter from "./src/features/follow/follow.routes.js";
-
+import searchRouter from "./src/features/search/search.routes.js";
 const app = express();
 app.use(
   cors({
@@ -45,6 +45,14 @@ app.use("/api/likes", likeRouter);
 app.use("/api/views/profile", profileViewRouter);
 app.use("/api/views/blogs", blogViewRouter);
 app.use("/api/requests", followRouter);
+app.use(
+  "/api/search",
+  (req, res, next) => {
+    console.log("loo");
+    next();
+  },
+  searchRouter
+);
 app.use(notFoundRoute);
 app.use(handleError);
 

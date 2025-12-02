@@ -2,10 +2,15 @@ import sendTheMail from "../../../config/nodemailer.js";
 import CustomError from "../../../middlewares/handleError.js";
 import emailVerifiedDoneMail from "../../../utility/mails/users/emailVerificationDone.js";
 import {
+  setUsernameRepo,
   toggleDisplayParamRepo,
   toggleVisibilityRepo,
 } from "../repositories/settings.repo.js";
-import { findUserById } from "../repositories/user.repository.js";
+import {
+  findUserById,
+  findUserByUsername,
+  updateProfile,
+} from "../repositories/user.repository.js";
 import {
   generateTokenRepo,
   verifyEmailTokenRepo,
@@ -85,6 +90,23 @@ const verifyEmail = async (req, res, next) => {
   }
 };
 
+const setUsername = async (req, res, next) => {
+  const { userName } = req.body;
+  if (!userName) {
+    return next(new CustomError(400, "UserName is missing"));
+  }
+  const userId = req.USER._id;
+
+  try {
+    const { userNameLastChangedAt } = await setUsernameRepo({
+      userId,
+      userName,
+    });
+    return res.status(200).json({ userNameLastChangedAt });
+  } catch (error) {
+    return next(new CustomError(403, error.message));
+  }
+};
 const changePasswordRequest = async (req, res, next) => {};
 const changePassword = async (req, res, next) => {};
 
@@ -99,4 +121,5 @@ export {
   changePassword,
   changeEmailRequest,
   changeEmail,
+  setUsername,
 };

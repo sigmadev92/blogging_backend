@@ -178,9 +178,10 @@ const signOut = async (req, res, next) => {
 
 const findUserProfile = async (req, res, next) => {
   const { medium, _value } = req.params;
+  console.log(medium, _value.slice(1));
   let author = null;
   if (medium === "username") {
-    author = await findUserByUsername(_value);
+    author = await findUserByUsername(_value.slice(1));
   } else {
     author = await findUserById(_value);
   }
