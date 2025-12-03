@@ -3,6 +3,14 @@ import Request from "./request.model.js";
 const checkPrevRequest = async ({ requestedBy, requestedTo }) => {
   return await Request.findOne({ requestedBy, requestedTo });
 };
+
+const doesAfollowsBRepo = async ({ userA, userB }) => {
+  return await Request.exists({
+    requestedBy: userA,
+    requestedTo: userB,
+    status: "accepted",
+  });
+};
 const createRequestRepo = async ({
   requestedBy,
   requestedTo,
@@ -82,6 +90,7 @@ const findPendingRequestRepo = async ({ requestedBy }) => {
 };
 
 export {
+  doesAfollowsBRepo,
   checkPrevRequest,
   createRequestRepo,
   acceptRequestRepo,

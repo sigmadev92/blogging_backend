@@ -5,7 +5,17 @@ const findUserById = async (userId) => {
 };
 
 const followUserRepo = async (userId) => {
-  return await Users.findById(userId).select("fullName profilePic userName");
+  const user = await Users.findById(userId).select(
+    "fullName profilePic userName profilePicToBeShown"
+  );
+
+  return {
+    _id: userId,
+    fullName: user.fullName,
+    profilePic: user.profilePic,
+    profilePicToBeShown: user.profilePicToBeShown,
+    userName: user.userName,
+  };
 };
 const findUserByUsername = async (userName) => {
   return await Users.findOne({ userName });

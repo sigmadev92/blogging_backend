@@ -18,6 +18,9 @@ const getFollowInfo = async (req, res, next) => {
 };
 
 const getFollowInfoForOther = async (req, res, next) => {
+  if (req.headers["x-client-secret"] !== CLIENT_SECRET) {
+    return next(new CustomError(403, "PRIME_DEVELOPER ROUTE"));
+  }
   const { userId } = req.params;
   const response = await findFollowInfoForOtherRepo({ userId });
   return res.status(200).json({ profiles: response });
@@ -26,11 +29,11 @@ const createRequest = async (req, res, next) => {
   const { requestedTo } = req.params;
   const requestedBy = req.USER._id;
   if (requestedTo === requestedBy) {
-    return next(new CustomError(403, "Cannot follow yourself"));
+    return next(new CustomError(400, "Cannot follow yourself"));
   }
   const user = await findUserById(requestedTo);
   if (!user) {
-    return next(new CustomError(403, "Invalid user ID"));
+    return next(new CustomError(400, "Invalid user ID"));
   }
 
   let status = "pending";
@@ -40,18 +43,18 @@ const createRequest = async (req, res, next) => {
 
   try {
     await createRequestRepo({ requestedBy, requestedTo, status });
+    console.log(" follow request sent");
     const io = req.app.get("io");
     const receiverSocketId = onlineUsers[requestedTo];
-    console.log(requestedBy, requestedTo, receiverSocketId);
-    const sender = {
-      userName: req.USER.userName,
-      _id: requestedBy,
-      fullName: req.USER.fullName,
-    };
+    const sender = await followUserRepo(requestedBy);
+
+    sender._id = requestedBy;
     const me = {
       _id: user._id,
       fullName: user.fullName,
       userName: user.userName,
+      profilePic: user.profilePic,
+      profilePicToBeShown: user.profilePicToBeShown,
     };
     // if the receiver is online - send a real time message too.
     if (receiverSocketId) {
@@ -72,28 +75,28 @@ const createRequest = async (req, res, next) => {
 };
 const acceptRequest = async (req, res, next) => {
   const { requestedBy } = req.params;
-  const user = await findUserById(requestedBy);
+  if (!requestedBy) {
+    return next(new CustomError(400, "User Id missing"));
+  }
+  const user = await followUserRepo(requestedBy);
   if (!user) {
-    return next(new CustomError(403, "Invalid follower Id"));
+    return next(new CustomError(400, "Invalid follower Id"));
   }
   const requestedTo = req.USER._id;
   if (requestedTo === requestedBy) {
     return next(
-      new CustomError(403, "Cannot Accept follow request of your own")
+      new CustomError(400, "Cannot Accept follow request of your own")
     );
   }
-  const me = {
-    _id: requestedTo,
-    fullName: req.USER.fullName,
-    userName: req.USER.userName,
-  };
+
   try {
     await acceptRequestRepo({ requestedBy, requestedTo });
     const io = req.app.get("io");
     const receiverSocketId = onlineUsers[requestedBy];
+    const me = await followUserRepo(requestedTo);
     if (receiverSocketId) {
       io.to(receiverSocketId).emit("user-accepted-my-request", {
-        me: { _id: user._id, fullName: user.fullName, userName: user.userName },
+        me: user,
         user: me,
       });
     }
@@ -107,15 +110,13 @@ const deleteSentRequest = async (req, res, next) => {
   const { requestedTo } = req.params;
   const requestedBy = req.USER._id;
   const me = await followUserRepo(requestedBy);
-  console.log("on dete sent rqst", me);
-  if (!me) {
-    return next(new CustomError(403, "Invalid Id"));
-  }
-  if (!requestedBy || !requestedTo) {
-    return next(new CustomError(400, "Missing data"));
+  console.log("on delete sent rqst", me);
+
+  if (!requestedTo) {
+    return next(new CustomError(400, "Missing User Id"));
   }
   if (requestedBy === requestedTo) {
-    return next(new CustomError(403, "Invalid data"));
+    return next(new CustomError(400, "Invalid data"));
   }
   try {
     await deleteRequestRepo({ requestedBy, requestedTo });
@@ -128,22 +129,23 @@ const deleteSentRequest = async (req, res, next) => {
     }
     res.status(200).json({ success: true });
   } catch (error) {
-    next(new CustomError(400, error.message));
+    next(new CustomError(403, error.message));
   }
 };
 
 const deleteReceivedRqst = async (req, res, next) => {
   const { requestedBy } = req.params;
   const requestedTo = req.USER._id;
-  const me = await followUserRepo(requestedTo);
+
   if (!requestedBy || !requestedTo) {
     return next(new CustomError(400, "Missing data"));
   }
   if (requestedBy === requestedTo) {
-    return next(new CustomError(403, "Invalid data"));
+    return next(new CustomError(400, "Invalid data"));
   }
   try {
     await deleteRequestRepo({ requestedBy, requestedTo });
+    const me = await followUserRepo(requestedTo);
     const io = req.app.get("io");
     const receiverSocketId = onlineUsers[requestedBy];
     if (receiverSocketId) {
@@ -182,7 +184,7 @@ const unfollow = async (req, res, next) => {
   const { requestedTo } = req.params;
   const user = await findUserById(requestedTo);
   if (!user) {
-    return next(new CustomError(403, "Invalid Account"));
+    return next(new CustomError(400, "Invalid Account"));
   }
   const requestedBy = req.USER._id;
   try {
@@ -191,15 +193,12 @@ const unfollow = async (req, res, next) => {
       requestedTo,
       actionType: "unfollow",
     });
+    const me = await followUserRepo(requestedBy);
     const io = req.app.get("io");
     const receiverSocketId = onlineUsers[requestedTo];
     if (receiverSocketId) {
       io.to(receiverSocketId).emit("they-unfollowed", {
-        user: {
-          _id: requestedBy,
-          fullName: req.USER.fullName,
-          userName: req.USER.userName,
-        },
+        user: me,
         premium: user.isPremiumAccount,
         myId: requestedTo,
       });
