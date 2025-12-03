@@ -78,6 +78,14 @@ const signin = async (req, res, next) => {
       path: "/",
     };
 
+    // in production
+    //     res.cookie("blog_token", token, {
+    //   httpOnly: true,
+    //   secure: true,            // required for SameSite=None
+    //   sameSite: "none",        // allow cross-site cookies
+    //   path: "/"
+    // });
+
     return res
       .status(200)
       .cookie("blog_token", token, cookieOptions)
@@ -232,6 +240,7 @@ const getAuthors = async (req, res, next) => {
 
 const generatePasswordToken = async (req, res, next) => {
   const { email } = req.body;
+  console.log(email);
   if (!email) {
     return next(new CustomError(400, "The email is missing."));
   }
