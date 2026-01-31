@@ -13,6 +13,8 @@ const recoverPasswordMail = ({ fullName, verifyLink }) => {
       <br/>
       To change your password, click this link.
       <br />
+      <br/>
+      <br/>
       <a href="${verifyLink}" style="background-color:blue;padding:0.3rem;border-radius:0.3rem;">Link</a>
     <br/>
     <b>OR</b>

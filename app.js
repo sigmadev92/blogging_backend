@@ -2,20 +2,10 @@ import express from "express";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import swaggerOptions from "./src/docs/swagger/swaggerOptions.js";
-import userRouter from "./src/features/user/routes/user.routes.js";
-import userSettingsRouter from "./src/features/user/routes/settings.routes.js";
-import notFoundRoute from "./src/middlewares/notFoundRoute.js";
-import { handleError } from "./src/middlewares/handleError.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { CLIENT_URL } from "./src/config/env.js";
-import blogRouter from "./src/features/blog/blog.routes.js";
-import likeRouter from "./src/features/like/like.routes.js";
-import { authMiddleware } from "./src/middlewares/authentication.js";
-import profileViewRouter from "./src/features/profileView/view.routes.js";
-import blogViewRouter from "./src/features/blogView/view.routes.js";
-import followRouter from "./src/features/follow/follow.routes.js";
-import searchRouter from "./src/features/search/search.routes.js";
+import router from "./src/routes/index.js";
 const app = express();
 app.use(
   cors({
@@ -38,22 +28,6 @@ const swaggerDocs = swaggerJSDoc(swaggerOptions);
 
 //swagger UI-route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use("/api/users", userRouter);
-app.use("/api/settings/users", authMiddleware, userSettingsRouter);
-app.use("/api/blogs", blogRouter);
-app.use("/api/likes", likeRouter);
-app.use("/api/views/profile", profileViewRouter);
-app.use("/api/views/blogs", blogViewRouter);
-app.use("/api/requests", followRouter);
-app.use(
-  "/api/search",
-  (req, res, next) => {
-    console.log("loo");
-    next();
-  },
-  searchRouter
-);
-app.use(notFoundRoute);
-app.use(handleError);
+app.use(router);
 
 export default app;

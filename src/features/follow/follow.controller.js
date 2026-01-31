@@ -12,6 +12,7 @@ import {
   followUserRepo,
 } from "../user/repositories/user.repository.js";
 import { onlineUsers } from "../../config/socket.js";
+import { CLIENT_SECRET } from "../../config/env.js";
 const getFollowInfo = async (req, res, next) => {
   const response = await findFollowInfoRepo({ userId: req.USER._id });
   return res.status(200).json({ profiles: response, myId: req.USER._id });
